@@ -1,6 +1,7 @@
 import 'dart:developer';
 
 import 'package:flutter/services.dart';
+import 'package:scribble_etome/models.dart';
 
 class CanvasEtomeOptions {
   static const platform = MethodChannel('canvas_etome_options');
@@ -36,15 +37,16 @@ class CanvasEtomeOptions {
       log("Error invoking destroy method: $e");
     }
   }
+
   static Future<void> load(List<int> bitArray) async {
     try {
-      await platform.invokeMethod('load',{'bitArray' : bitArray});
+      await platform.invokeMethod('load', {'bitArray': bitArray});
     } catch (e) {
       log("Error invoking load method: $e");
     }
   }
 
-  static Future<void> setPenstroke() async {
+  static Future<void> setPenType() async {
     try {
       await platform.invokeMethod('strokeType', 1);
     } catch (e) {
@@ -52,12 +54,16 @@ class CanvasEtomeOptions {
     }
   }
 
-  static Future<List<int>> save() async {
+  static Future<SaveResult> save() async {
     try {
-      final bitmap = await platform.invokeMethod('save');
+      final dateTimeNow = DateTime.now().toString().replaceAll(' ', '_');
+      final bitmap =
+          await platform.invokeMethod('save', {"imageName": dateTimeNow});
       destroy();
-      return bitmap;
-     
+      return SaveResult(
+        bitmap: bitmap,
+        dateTimeNow: dateTimeNow,
+      );
     } catch (e) {
       log("Error invoking save method: $e");
       rethrow;

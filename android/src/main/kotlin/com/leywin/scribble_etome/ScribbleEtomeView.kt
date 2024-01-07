@@ -28,7 +28,7 @@ class HandwrittenView(context: Context, creationParams: Map<String?, Any?>?, cha
     private var initFlag = false
     var mHandwrittenView: HandwrittenView2? = null
     private var strokeTv: TextView? = null
-    private val mHandler = InitHandler()
+    private val mHandler = InitHandler(creationParams)
     private var strokeType = 0
     private var layout: View = View.inflate(context, R.layout.activity_main, null)
 
@@ -41,12 +41,12 @@ class HandwrittenView(context: Context, creationParams: Map<String?, Any?>?, cha
     }
     init {
         mHandwrittenView = layout.findViewById(R.id.handwrittenView)
-        layout.findViewById<View>(R.id.undo).setOnClickListener { onClick(it) }
-        layout.findViewById<View>(R.id.redo).setOnClickListener { onClick(it) }
-        layout.findViewById<View>(R.id.clear).setOnClickListener { onClick(it) }
-        layout.findViewById<View>(R.id.stroke).setOnClickListener { onClick(it) }
-        layout.findViewById<View>(R.id.save).setOnClickListener { onClick(it) }
-        strokeTv = layout.findViewById(R.id.stroke)
+//        layout.findViewById<View>(R.id.undo).setOnClickListener { onClick(it) }
+//        layout.findViewById<View>(R.id.redo).setOnClickListener { onClick(it) }
+//        layout.findViewById<View>(R.id.clear).setOnClickListener { onClick(it) }
+//        layout.findViewById<View>(R.id.stroke).setOnClickListener { onClick(it) }
+//        layout.findViewById<View>(R.id.save).setOnClickListener { onClick(it) }
+//        strokeTv = layout.findViewById(R.id.stroke)
         context.resources.displayMetrics.also {
             mScreenW = it.widthPixels
             mScreenH = it.heightPixels
@@ -68,7 +68,10 @@ class HandwrittenView(context: Context, creationParams: Map<String?, Any?>?, cha
                 val strokeType = call.argument<Int>("strokeType")
                 setPenStroke(strokeType ?: 0)
             }
-            "save" -> save(result)
+            "save" -> {
+                val fileName = call.argument<String>("imageName")
+                save(result, fileName!!)
+            }
             "destroy" -> onDestroy()
             "load" -> {
                 val bitArr = call.argument<ByteArray>("bitArray")
@@ -114,7 +117,7 @@ class HandwrittenView(context: Context, creationParams: Map<String?, Any?>?, cha
         }
     }
 
-    private fun save(result: MethodChannel.Result) {
+    private fun save(result: MethodChannel.Result,fileName: String) {
         if (!buttonLock) {
             buttonLock = true
             val bitmap: Bitmap = mHandwrittenView!!.bitmap
@@ -122,93 +125,19 @@ class HandwrittenView(context: Context, creationParams: Map<String?, Any?>?, cha
             val byteArrayOutputStream = ByteArrayOutputStream()
             bitmap.compress(Bitmap.CompressFormat.PNG, 90, byteArrayOutputStream)
             val byteArray = byteArrayOutputStream.toByteArray()
+            saveBitmap(mHandwrittenView!!.bitmap, fileName)
             result.success(byteArray)
         }
     }
 
 
-    private fun onClick(v: View) {
-        when (v.id) {
-            R.id.undo -> object : Thread() {
-                override fun run() {
-                    if (!buttonLock) {
-                        buttonLock = true
-                        if (initFlag) {
-                            mHandwrittenView!!.undo()
-                        }
-                        buttonLock = false
-                    }
-                }
-            }.start()
 
-            R.id.redo -> object : Thread() {
-                override fun run() {
-                    if (!buttonLock) {
-                        buttonLock = true
-                        if (initFlag) {
-                            mHandwrittenView!!.redo()
-                        }
-                        buttonLock = false
-                    }
-                }
-            }.start()
-
-            R.id.clear -> object : Thread() {
-                override fun run() {
-                    if (!buttonLock) {
-                        buttonLock = true
-                        if (initFlag) {
-                            mHandwrittenView!!.clear()
-                        }
-                        buttonLock = false
-                    }
-                }
-            }.start()
-
-            R.id.stroke -> {
-                strokeType++
-                if (strokeType >= 5) {
-                    strokeType = 0
-                }
-                Log.e(TAG, "Current strokeType:$strokeType")
-                var stroke = "Ballpoint Pen"
-                when (strokeType) {
-                    0 -> {
-                        stroke = "Ballpoint Pen"
-                    }
-                    1 -> {
-                        stroke = "Fountain Pen"
-                    }
-                    2 -> {
-                        stroke = "Pencil"
-                    }
-                    3 -> {
-                        stroke = "Linear Eraser"
-                    }
-                    4 -> {
-                        stroke = "Area Eraser"
-                    }
-                }
-                strokeTv!!.text = stroke
-                mHandwrittenView!!.setPenStroke(strokeType)
-            }
-
-            R.id.save -> if (!buttonLock) {
-                buttonLock = true
-                val fileName = "testSave"
-
-                saveBitmap(mHandwrittenView!!.bitmap, fileName)
-//                onBackPressed()
-                buttonLock = false
-            }
-        }
-    }
 
     private val isSpecialPanel: Boolean
 
         get() = false
 
-    internal inner class InitHandler : Handler(Looper.getMainLooper()) {
+    internal inner class InitHandler(private val creationParams: Map<String?, Any?>?) : Handler(Looper.getMainLooper()) {
         override fun handleMessage(msg: Message) {
             super.handleMessage(msg)
             when (msg.what) {
@@ -263,7 +192,8 @@ class HandwrittenView(context: Context, creationParams: Map<String?, Any?>?, cha
                          * After initialization is complete, load and refresh the previously saved handwriting image,
                          * and perform writing and drawing operations on the original handwriting.
                          */
-                        val bitmap = loadBitmap("testSave")
+                        val imageName = creationParams!!["imageName"] as String
+                        val bitmap = loadBitmap(imageName)
                         if (bitmap != null) {
                             mHandwrittenView!!.bitmap = bitmap
                             mHandwrittenView!!.refreshBitmap()
@@ -318,7 +248,7 @@ class HandwrittenView(context: Context, creationParams: Map<String?, Any?>?, cha
         private const val mFilterBottom = 0
         const val DELAY_REFRESH = 0
         const val DELAY_TIME = 100
-        private const val HANDWRITE_SAVE_PATH = "/storage/emulated/0/HandWriter/"
+        private const val HANDWRITE_SAVE_PATH = "/storage/emulated/0/Etome/"
         private val TAG = HandwrittenView::class.java.simpleName
 
         fun saveBitmap(bitmap: Bitmap, imageName: String?) {

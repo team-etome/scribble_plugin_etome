@@ -4,54 +4,12 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".MainActivity"
+    tools:context=".HandwrittenView"
     android:orientation="vertical">
 
-    <LinearLayout
-        android:id="@+id/appbar"
+    <Space
         android:layout_width="match_parent"
-        android:layout_height="30dp">
-
-        <TextView
-            android:id="@+id/undo"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:gravity="center"
-            android:text="undo" />
-
-        <TextView
-            android:id="@+id/redo"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:gravity="center"
-            android:text="redo" />
-
-        <TextView
-            android:id="@+id/clear"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:gravity="center"
-            android:text="clear" />
-
-        <TextView
-            android:id="@+id/stroke"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:gravity="center"
-            android:text="stroke" />
-
-        <TextView
-            android:id="@+id/save"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:gravity="center"
-            android:text="save" />
-    </LinearLayout>
+        android:layout_height="30dp"/>
 
     <View
         android:layout_width="match_parent"

@@ -1,5 +1,4 @@
 import 'dart:typed_data';
-
 import 'package:flutter/material.dart';
 import 'package:scribble_etome_example/canvas.dart';
 import 'package:scribble_etome_example/models/image_model.dart';
@@ -30,66 +29,66 @@ class _BookletPageState extends State<BookletPage> {
 
   @override
   Widget build(BuildContext context) {
-    if (imageList.isNotEmpty) {
-      return SafeArea(
-        child: Scaffold(
-          appBar: AppBar(
-            actions: [
-              IconButton(
-                  onPressed: () {
-                    Navigator.push(context, MaterialPageRoute(
-                      builder: (context) {
-                        return CanvasPage(
-                          index: imageList.length,
-                        );
-                      },
-                    ));
-                  },
-                  icon: const Icon(Icons.add))
-            ],
-          ),
-          body: SingleChildScrollView(
-            child: Column(
-              children: List.generate(
-                  imageList.length,
-                  (index) => ListTile(
-                        onTap: () {
-                          Navigator.push(context, MaterialPageRoute(
-                            builder: (context) {
-                              return CanvasPage(
-                                  index: index, bytes: imageList[index].byteList);
-                            },
-                          ));
-                        },
-                        leading: SizedBox(
-                            height: 200,
-                            width: 200,
-                            child: Image.memory(Uint8List.fromList(imageList[index].byteList))),
-                        trailing: Text(imageList[index].dateTime),
-                      )),
-            ),
-          ),
-        ),
-      );
-    } else {
-      return Scaffold(
-        appBar: AppBar(
-          actions: [
-            IconButton(
-                onPressed: () {
-                  Navigator.push(context, MaterialPageRoute(
-                    builder: (context) {
-                      return const CanvasPage();
-                    },
+    return Scaffold(
+      appBar: AppBar(
+        actions: [
+          IconButton(
+            onPressed: () {
+              Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => CanvasPage(
+                      imageName: '',
+                      index: imageList.length,
+                    ),
                   ));
-                },
-                icon: const Icon(Icons.add))
-          ],
-        ),
-        body: const Center(
-          child: CircularProgressIndicator(),
-        ),
-      );
-    }
+            },
+            icon: const Icon(Icons.add),
+          ),
+        ],
+      ),
+      body: imageList.isNotEmpty
+          ? GridView.builder(
+              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                crossAxisCount: 2,
+                crossAxisSpacing: 4.0,
+                mainAxisSpacing: 4.0,
+                childAspectRatio: 1.0,
+              ),
+              itemCount: imageList.length,
+              itemBuilder: (context, index) {
+                return GestureDetector(
+                  onTap: () {
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => CanvasPage(
+                            index: index,
+                            bytes: imageList[index].byteList,
+                            imageName: imageList[index].dateTime,
+                          ),
+                        ));
+                  },
+                  child: GridTile(
+                    footer: Container(
+                      padding: const EdgeInsets.all(8.0),
+                      color: Colors.black54,
+                      child: Text(
+                        imageList[index].dateTime,
+                        style: const TextStyle(color: Colors.white),
+                      ),
+                    ),
+                    child: Image.memory(
+                      Uint8List.fromList(imageList[index].byteList),
+                      fit: BoxFit.cover,
+                    ),
+                  ),
+                );
+              },
+            )
+          : const Center(
+              child: Text('Add scribble'),
+            ),
+    );
   }
 }

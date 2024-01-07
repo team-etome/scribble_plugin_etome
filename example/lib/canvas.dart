@@ -1,6 +1,7 @@
 import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
+import 'package:scribble_etome/models.dart';
 import 'package:scribble_etome/scribble_etome.dart';
 import 'package:scribble_etome_example/booklet_page.dart';
 import 'package:scribble_etome_example/models/image_model.dart';
@@ -10,9 +11,11 @@ class CanvasPage extends StatefulWidget {
     super.key,
     this.index = 0,
     this.bytes,
+    this.imageName,
   });
   final int index;
   final List<int>? bytes;
+  final String? imageName;
 
   @override
   State<CanvasPage> createState() => _CanvasPageState();
@@ -24,70 +27,95 @@ class _CanvasPageState extends State<CanvasPage> {
     return SafeArea(
       child: Stack(
         children: [
-          const Scaffold(
+          Scaffold(
             body: CanvasEtome(
-                // bitMap: widget.bytes,
-                ),
-          ),
-          Positioned(
-            bottom: 50,
-            right: 50,
-            child: TextButton(
-              onPressed: () {
-                CanvasEtomeOptions.clear();
-              },
-              child: const Text('clear'),
-            ),
-          ),
-         
-          Positioned(
-            bottom: 50,
-            right: 0,
-            left: 0,
-            child: TextButton(
-              onPressed: () {
-                if (widget.bytes != null) {
-                  CanvasEtomeOptions.load(widget.bytes!);
-                }
-              },
-              child: const Text('load'),
+              // bitMap: widget.bytes,
+              imageName: widget.imageName ?? '',
             ),
           ),
           Positioned(
-            bottom: 50,
-            left: 50,
-            child: TextButton(
-              onPressed: () async {
-                final List<int> bytes = await CanvasEtomeOptions.save();
-                await ImageBox.openBox();
-                final imageBox = ImageBox.box;
-                final imageList = imageBox.values.toList();
-                final intIndex = imageList
-                    .indexWhere((element) => element.index == widget.index);
+            top: 0,
+            child: Container(
+              color: Colors.white,
+              width: MediaQuery.of(context).size.width,
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  TextButton(
+                    onPressed: () {
+                      CanvasEtomeOptions.undo();
+                    },
+                    child: const Text(
+                      'Undo',
+                      style: TextStyle(color: Colors.black),
+                    ),
+                  ),
+                  TextButton(
+                    onPressed: () {
+                      CanvasEtomeOptions.redo();
+                    },
+                    child: const Text(
+                      'Redo',
+                      style: TextStyle(color: Colors.black),
+                    ),
+                  ),
+                  TextButton(
+                    onPressed: () {
+                      CanvasEtomeOptions.clear();
+                    },
+                    child: const Text(
+                      'Clear',
+                      style: TextStyle(color: Colors.black),
+                    ),
+                  ),
+                  TextButton(
+                    onPressed: () {
+                      CanvasEtomeOptions.setPenType();
+                    },
+                    child: const Text(
+                      'Stroke',
+                      style: TextStyle(color: Colors.black),
+                    ),
+                  ),
+                  TextButton(
+                    onPressed: () async {
+                      final SaveResult saveResult =
+                          await CanvasEtomeOptions.save();
+                      await ImageBox.openBox();
+                      final imageBox = ImageBox.box;
+                      final imageList = imageBox.values.toList();
+                      final intIndex = imageList.indexWhere(
+                          (element) => element.index == widget.index);
 
-                if (intIndex == -1) {
-                  await imageBox.add(ImageModel(
-                      index: widget.index,
-                      dateTime: DateTime.now().toString(),
-                      byteList: bytes));
-                } else {
-                  await imageBox.putAt(
-                      intIndex,
-                      ImageModel(
-                          index: widget.index,
-                          dateTime: DateTime.now().toString(),
-                          byteList: bytes));
-                }
+                      if (intIndex == -1) {
+                        await imageBox.add(ImageModel(
+                            index: widget.index,
+                            dateTime: saveResult.dateTimeNow,
+                            byteList: saveResult.bitmap));
+                      } else {
+                        await imageBox.putAt(
+                            intIndex,
+                            ImageModel(
+                                index: widget.index,
+                                dateTime: saveResult.dateTimeNow,
+                                byteList: saveResult.bitmap));
+                      }
 
-                Navigator.push(context, MaterialPageRoute(
-                  builder: (context) {
-                    return const BookletPage();
-                  },
-                ));
-              },
-              child: const Text('save'),
+                      Navigator.push(context, MaterialPageRoute(
+                        builder: (context) {
+                          return const BookletPage();
+                        },
+                      ));
+                    },
+                    child: const Text(
+                      'Save',
+                      style: TextStyle(color: Colors.black),
+                    ),
+                  ),
+                ],
+              ),
             ),
-          ),
+          )
         ],
       ),
     );
