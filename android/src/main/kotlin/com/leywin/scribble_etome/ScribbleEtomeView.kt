@@ -4,11 +4,10 @@ import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.graphics.Rect
 import android.os.Handler
+import android.os.Looper
 import android.os.Message
-import android.util.DisplayMetrics
 import android.util.Log
 import android.view.HandwrittenView2
-import android.view.LayoutInflater
 import android.view.View
 import android.widget.TextView
 import io.flutter.plugin.common.MethodCall
@@ -20,16 +19,18 @@ import java.util.Date
 import java.util.Locale
 import io.flutter.plugin.platform.PlatformView
 import java.io.ByteArrayOutputStream
+import java.io.IOException
+import kotlin.system.exitProcess
 
 
 class HandwrittenView(context: Context, creationParams: Map<String?, Any?>?, channel: MethodChannel) : PlatformView  {
     private var buttonLock = false
     private var initFlag = false
-    public var mHandwrittenView: HandwrittenView2? = null
+    var mHandwrittenView: HandwrittenView2? = null
     private var strokeTv: TextView? = null
     private val mHandler = InitHandler()
     private var strokeType = 0
-    private var layout: View = LayoutInflater.from(context).inflate(R.layout.activity_main, null, false)
+    private var layout: View = View.inflate(context, R.layout.activity_main, null)
 
     override fun getView(): View {
         return layout
@@ -46,8 +47,6 @@ class HandwrittenView(context: Context, creationParams: Map<String?, Any?>?, cha
         layout.findViewById<View>(R.id.stroke).setOnClickListener { onClick(it) }
         layout.findViewById<View>(R.id.save).setOnClickListener { onClick(it) }
         strokeTv = layout.findViewById(R.id.stroke)
-
-        val metrics = DisplayMetrics()
         context.resources.displayMetrics.also {
             mScreenW = it.widthPixels
             mScreenH = it.heightPixels
@@ -128,7 +127,7 @@ class HandwrittenView(context: Context, creationParams: Map<String?, Any?>?, cha
     }
 
 
-    fun onClick(v: View) {
+    private fun onClick(v: View) {
         when (v.id) {
             R.id.undo -> object : Thread() {
                 override fun run() {
@@ -196,7 +195,6 @@ class HandwrittenView(context: Context, creationParams: Map<String?, Any?>?, cha
 
             R.id.save -> if (!buttonLock) {
                 buttonLock = true
-                val timestamp = SimpleDateFormat("yyyyMMdd_HHmmss", Locale.getDefault()).format(Date())
                 val fileName = "testSave"
 
                 saveBitmap(mHandwrittenView!!.bitmap, fileName)
@@ -208,9 +206,9 @@ class HandwrittenView(context: Context, creationParams: Map<String?, Any?>?, cha
 
     private val isSpecialPanel: Boolean
 
-        private get() = false
+        get() = false
 
-    internal inner class InitHandler : Handler() {
+    internal inner class InitHandler : Handler(Looper.getMainLooper()) {
         override fun handleMessage(msg: Message) {
             super.handleMessage(msg)
             when (msg.what) {
@@ -226,7 +224,7 @@ class HandwrittenView(context: Context, creationParams: Map<String?, Any?>?, cha
                             }
                             if (count++ > 40) {
                                 Log.d(TAG, "Flash test : ++++++++ removeCallbacks")
-                                System.exit(0)
+                                exitProcess(0)
                             }
                             Log.d(
                                 TAG,
@@ -286,7 +284,7 @@ class HandwrittenView(context: Context, creationParams: Map<String?, Any?>?, cha
 //        Log.e("TAG", "onPause")
 //    }
 
-    fun onDestroy() {
+    private fun onDestroy() {
         if (initFlag) {
             mHandwrittenView!!.clear()
             mHandwrittenView!!.exit()
@@ -320,45 +318,51 @@ class HandwrittenView(context: Context, creationParams: Map<String?, Any?>?, cha
         private const val mFilterBottom = 0
         const val DELAY_REFRESH = 0
         const val DELAY_TIME = 100
-        const val HANDWRITER_SAVE_PATH = "/storage/emulated/0/HandWriter/"
+        private const val HANDWRITE_SAVE_PATH = "/storage/emulated/0/HandWriter/"
         private val TAG = HandwrittenView::class.java.simpleName
-        fun saveBitmap(bitmap: Bitmap, imagename: String?) {
-            var imagename = imagename
-            val file = File(HANDWRITER_SAVE_PATH)
-            if (!file.exists()) {
-                val flag = file.mkdirs()
-            }
-            if (imagename == null) {
-                val df = SimpleDateFormat("yyyyMMdd-HHmmss")
-                imagename = df.format(Date())
-            }
-            val path = HANDWRITER_SAVE_PATH + imagename + ".png"
-            var fos: FileOutputStream? = null
-            try {
-                fos = FileOutputStream(path)
-                if (fos != null) {
-                    bitmap.compress(Bitmap.CompressFormat.PNG, 90, fos)
-                    fos.close()
-                }
+
+        fun saveBitmap(bitmap: Bitmap, imageName: String?) {
+            val directory = File(HANDWRITE_SAVE_PATH)
+            if (!directory.exists() && !directory.mkdirs()) {
+                Log.e("HandwrittenView", "Failed to create directory: $HANDWRITE_SAVE_PATH")
                 return
-            } catch (e: Exception) {
-                Log.v("xml_log_err", "" + e.toString())
-                e.printStackTrace()
+            }
+
+            val fileName = imageName ?: SimpleDateFormat("yyyyMMdd-HHmmss", Locale.getDefault()).format(Date())
+            val filePath = "$HANDWRITE_SAVE_PATH${fileName}.png"
+
+            try {
+                FileOutputStream(filePath).use { fos ->
+                    bitmap.compress(Bitmap.CompressFormat.PNG, 90, fos)
+                }
+            } catch (e: IOException) {
+                Log.e("HandwrittenView", "Error saving bitmap: ${e.localizedMessage}", e)
             }
         }
 
-        fun loadBitmap(imagename: String): Bitmap? {
-            val opts =
-                BitmapFactory.Options()
-            opts.inPreferredConfig = Bitmap.Config.ARGB_8888
-            opts.inScaled = false
-            opts.inMutable = true
-            val path =
-                HANDWRITER_SAVE_PATH + imagename + ".png"
-            val file = File(path)
-            return if (!file.exists()) {
+
+        fun loadBitmap(imageName: String): Bitmap? {
+            val filePath = "$HANDWRITE_SAVE_PATH${imageName}.png"
+            val file = File(filePath)
+
+            if (!file.exists()) {
+                Log.e("HandwrittenView", "File not found: $filePath")
+                return null
+            }
+
+            val options = BitmapFactory.Options().apply {
+                inPreferredConfig = Bitmap.Config.ARGB_8888
+                inScaled = false
+                inMutable = true
+            }
+
+            return try {
+                BitmapFactory.decodeFile(filePath, options)
+            } catch (e: Exception) {
+                Log.e("HandwrittenView", "Error loading bitmap: ${e.localizedMessage}", e)
                 null
-            } else BitmapFactory.decodeFile(path, opts)
+            }
         }
+
     }
 }
