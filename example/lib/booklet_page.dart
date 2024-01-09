@@ -2,6 +2,7 @@ import 'dart:typed_data';
 import 'package:flutter/material.dart';
 import 'package:scribble_etome_example/canvas.dart';
 import 'package:scribble_etome_example/models/image_model.dart';
+import 'package:permission_handler/permission_handler.dart';
 
 class BookletPage extends StatefulWidget {
   const BookletPage({super.key});
@@ -13,12 +14,25 @@ class BookletPage extends StatefulWidget {
 class _BookletPageState extends State<BookletPage> {
   List<ImageModel> imageList = [];
   int pageIndex = 0;
+  String permissionStatus = 'false';
 
   @override
   void initState() {
+    // requestStoragePermission();
     loadImages();
     super.initState();
   }
+
+  // Future<void> requestStoragePermission() async {
+  //   var status = await Permission.storage.status;
+  //   if (!status.isGranted) {
+  //     await Permission.storage.request();
+  //   } else {
+  //     setState(() {
+  //       permissionStatus = 'true';
+  //     });
+  //   }
+  // }
 
   loadImages() async {
     await ImageBox.openBox();
@@ -86,8 +100,8 @@ class _BookletPageState extends State<BookletPage> {
                 );
               },
             )
-          : const Center(
-              child: Text('Add scribble'),
+          : Center(
+              child: Text('Add scribble $permissionStatus'),
             ),
     );
   }

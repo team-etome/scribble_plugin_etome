@@ -1,6 +1,6 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    android:sharedUserId="android.uid.system">
-    <uses-permission android:name="android.permission.INTERNET"/>
+    android:sharedUserId="android.uid.system"
+    >
     <application
         android:label="scribble_etome_example"
         android:name="${applicationName}"

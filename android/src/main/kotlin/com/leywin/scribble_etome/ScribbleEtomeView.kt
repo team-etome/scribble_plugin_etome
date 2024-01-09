@@ -12,14 +12,14 @@ import android.view.View
 import android.widget.TextView
 import io.flutter.plugin.common.MethodCall
 import io.flutter.plugin.common.MethodChannel
+import io.flutter.plugin.platform.PlatformView
+import java.io.ByteArrayOutputStream
 import java.io.File
 import java.io.FileOutputStream
+import java.io.IOException
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
-import io.flutter.plugin.platform.PlatformView
-import java.io.ByteArrayOutputStream
-import java.io.IOException
 import kotlin.system.exitProcess
 
 
@@ -28,7 +28,7 @@ class HandwrittenView(context: Context, creationParams: Map<String?, Any?>?, cha
     private var initFlag = false
     var mHandwrittenView: HandwrittenView2? = null
     private var strokeTv: TextView? = null
-    private val mHandler = InitHandler(creationParams)
+    private val mHandler = InitHandler(creationParams,context)
     private var strokeType = 0
     private var layout: View = View.inflate(context, R.layout.activity_main, null)
 
@@ -53,13 +53,13 @@ class HandwrittenView(context: Context, creationParams: Map<String?, Any?>?, cha
         }
 
         channel.setMethodCallHandler { call, result ->
-            onMethodCall(call, result)
+            onMethodCall(call, result,context)
         }
 
         mHandler.sendEmptyMessageDelayed(DELAY_REFRESH, DELAY_TIME.toLong())
     }
 
-    private fun onMethodCall(call: MethodCall, result:  MethodChannel.Result) {
+    private fun onMethodCall(call: MethodCall, result:  MethodChannel.Result, context: Context) {
         when (call.method) {
             "undo" -> undo()
             "redo" -> redo()
@@ -69,23 +69,34 @@ class HandwrittenView(context: Context, creationParams: Map<String?, Any?>?, cha
                 setPenStroke(strokeType ?: 0)
             }
             "save" -> {
-                val fileName = call.argument<String>("imageName")
-                save(result, fileName!!)
+                val imageName = call.argument<String>("imageName")
+
+                save(result, imageName!!)
             }
             "destroy" -> onDestroy()
-            "load" -> {
-                val bitArr = call.argument<ByteArray>("bitArray")
-                load(bitArr!!)
-            }
+//            "load" -> {
+//                val bitArr = call.argument<ByteArray>("bitMap")
+//                load(bitArr!!,context,result)
+//            }
 
         }
     }
 
-    private fun load(byteArr: ByteArray){
-        val bitmap = BitmapFactory.decodeByteArray(byteArr, 0, byteArr.size)
-        mHandwrittenView!!.bitmap = bitmap
-        mHandwrittenView!!.refreshBitmap()
+    private fun load(byteArray: ByteArray, context: Context, result: MethodChannel.Result) {
+        val bitmap = BitmapFactory.decodeByteArray(byteArray, 0, byteArray.size)
+
+        if (bitmap != null) {
+            mHandwrittenView!!.bitmap = bitmap
+            mHandwrittenView!!.refreshBitmap()
+            result.success(null)
+        } else {
+            val errorMessage = "Failed to convert byte array to bitmap"
+            Log.e("HandwrittenView", errorMessage)
+            result.error("BITMAP_ERROR", errorMessage, null)
+        }
     }
+
+
 
     private fun undo() {
         if (!buttonLock && initFlag) {
@@ -117,18 +128,23 @@ class HandwrittenView(context: Context, creationParams: Map<String?, Any?>?, cha
         }
     }
 
-    private fun save(result: MethodChannel.Result,fileName: String) {
+    private fun save(result: MethodChannel.Result, imageName: String) {
         if (!buttonLock) {
             buttonLock = true
             val bitmap: Bitmap = mHandwrittenView!!.bitmap
-            buttonLock = false
             val byteArrayOutputStream = ByteArrayOutputStream()
             bitmap.compress(Bitmap.CompressFormat.PNG, 90, byteArrayOutputStream)
             val byteArray = byteArrayOutputStream.toByteArray()
-            saveBitmap(mHandwrittenView!!.bitmap, fileName)
-            result.success(byteArray)
+            val (isSaved, errorMessage) = saveBitmap(bitmap, imageName);
+            if(isSaved){
+                result.success(byteArray)
+            }else{
+                result.error("SAVE_ERROR", errorMessage, null)
+            }
+            buttonLock = false
         }
     }
+
 
 
 
@@ -137,7 +153,7 @@ class HandwrittenView(context: Context, creationParams: Map<String?, Any?>?, cha
 
         get() = false
 
-    internal inner class InitHandler(private val creationParams: Map<String?, Any?>?) : Handler(Looper.getMainLooper()) {
+    internal inner class InitHandler(private val creationParams: Map<String?, Any?>?, private val context: Context) : Handler(Looper.getMainLooper()) {
         override fun handleMessage(msg: Message) {
             super.handleMessage(msg)
             when (msg.what) {
@@ -251,24 +267,93 @@ class HandwrittenView(context: Context, creationParams: Map<String?, Any?>?, cha
         private const val HANDWRITE_SAVE_PATH = "/storage/emulated/0/Etome/"
         private val TAG = HandwrittenView::class.java.simpleName
 
-        fun saveBitmap(bitmap: Bitmap, imageName: String?) {
+        fun saveBitmap(bitmap: Bitmap, imageName: String?): Pair<Boolean, String?> {
             val directory = File(HANDWRITE_SAVE_PATH)
             if (!directory.exists() && !directory.mkdirs()) {
-                Log.e("HandwrittenView", "Failed to create directory: $HANDWRITE_SAVE_PATH")
-                return
+                val errMsg = "Failed to create directory: $HANDWRITE_SAVE_PATH"
+                Log.e("HandwrittenView", errMsg)
+                return Pair(false, errMsg)
             }
 
             val fileName = imageName ?: SimpleDateFormat("yyyyMMdd-HHmmss", Locale.getDefault()).format(Date())
             val filePath = "$HANDWRITE_SAVE_PATH${fileName}.png"
 
-            try {
+            return try {
                 FileOutputStream(filePath).use { fos ->
                     bitmap.compress(Bitmap.CompressFormat.PNG, 90, fos)
                 }
+                Pair(true, null) // Success, no error message
             } catch (e: IOException) {
-                Log.e("HandwrittenView", "Error saving bitmap: ${e.localizedMessage}", e)
+                val errMsg = "Error saving bitmap: ${e.localizedMessage}"
+                Log.e("HandwrittenView", errMsg, e)
+                Pair(false, errMsg) // Failure, with error message
             }
         }
+
+//        fun saveBitmap(bitmap: Bitmap, imagename: String?): Boolean {
+//            var imagename = imagename
+//            val file = File(HANDWRITE_SAVE_PATH)
+//
+//            if (!file.exists()) {
+//                val flag: Boolean = file.mkdirs()
+//            }
+//
+//            if (imagename == null) {
+//                val df = SimpleDateFormat("yyyyMMdd-HHmmss")
+//                imagename = df.format(Date())
+//                Log.d("leywin", "image name is null")
+//            } else {
+//                Log.d("leywin", "image name is not null")
+//            }
+//
+//            val path: String = HANDWRITE_SAVE_PATH + imagename + ".png"
+//            var fos: FileOutputStream? = null
+//
+//            try {
+//                fos = FileOutputStream(path)
+//
+//                if (fos != null) {
+//                    bitmap.compress(Bitmap.CompressFormat.PNG, 90, fos)
+//                    fos.close()
+//                    return true // Image successfully saved
+//                }
+//            } catch (e: Exception) {
+//                Log.d("leywin", "didnt save")
+//                Log.v("xml_log_err", "" + e.toString())
+//                e.printStackTrace()
+//            }
+//
+//            return false // Image not saved due to an exception
+//        }
+
+
+//        fun saveBitmap( bitmap: Bitmap, imageName: String?,context: Context): Pair<Boolean, String?> {
+//            // Use the app-specific external files directory for storage
+//            val directory = context.getExternalFilesDir(null)
+//            val folder = File(directory, "Etome")
+//
+//            if (!folder.exists() && !folder.mkdirs()) {
+//                val errMsg = "Failed to create directory: ${folder.absolutePath}"
+//                Log.e("HandwrittenView", errMsg)
+//                return Pair(false, errMsg)
+//            }
+//
+//            val fileName = imageName ?: SimpleDateFormat("yyyyMMdd-HHmmss", Locale.getDefault()).format(Date())
+//            val filePath = File(folder, "${fileName}.png").absolutePath
+//
+//            return try {
+//                FileOutputStream(filePath).use { fos ->
+//                    bitmap.compress(Bitmap.CompressFormat.PNG, 90, fos)
+//                }
+//                Pair(true, null) // Success, no error message
+//            } catch (e: IOException) {
+//                val errMsg = "Error saving bitmap: ${e.localizedMessage}"
+//                Log.e("HandwrittenView", errMsg, e)
+//                Pair(false, errMsg) // Failure, with error message
+//            }
+//        }
+
+
 
 
         fun loadBitmap(imageName: String): Bitmap? {
@@ -293,6 +378,11 @@ class HandwrittenView(context: Context, creationParams: Map<String?, Any?>?, cha
                 null
             }
         }
+
+
+
+
+
 
     }
 }

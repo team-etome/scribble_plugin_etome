@@ -1,6 +1,7 @@
 import 'dart:developer';
-
+import 'package:intl/intl.dart';
 import 'package:flutter/services.dart';
+import 'package:scribble_etome/functions.dart';
 import 'package:scribble_etome/models.dart';
 
 class CanvasEtomeOptions {
@@ -38,9 +39,9 @@ class CanvasEtomeOptions {
     }
   }
 
-  static Future<void> load(List<int> bitArray) async {
+  static Future<void> load(List<int> byteArray) async {
     try {
-      await platform.invokeMethod('load', {'bitArray': bitArray});
+      await platform.invokeMethod('load', {'bitmap': byteArray});
     } catch (e) {
       log("Error invoking load method: $e");
     }
@@ -54,15 +55,18 @@ class CanvasEtomeOptions {
     }
   }
 
-  static Future<SaveResult> save() async {
+  static save(String directoryPath) async {
     try {
-      final dateTimeNow = DateTime.now().toString().replaceAll(' ', '_');
+      DateTime now = DateTime.now();
+      String formattedDate = DateFormat('yyyyMMdd-HHmmss').format(now);
       final bitmap =
-          await platform.invokeMethod('save', {"imageName": dateTimeNow});
+          await platform.invokeMethod('save', {"imageName": formattedDate});
       destroy();
+      print(bitmap.toString());
       return SaveResult(
         bitmap: bitmap,
-        dateTimeNow: dateTimeNow,
+        dateTimeNow: formattedDate,
+        directoryPath: directoryPath,
       );
     } catch (e) {
       log("Error invoking save method: $e");

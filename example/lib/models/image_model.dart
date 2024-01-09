@@ -1,5 +1,3 @@
-import 'dart:typed_data';
-
 import 'package:hive_flutter/adapters.dart';
 part 'image_model.g.dart';
 
