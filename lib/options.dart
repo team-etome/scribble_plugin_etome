@@ -1,7 +1,6 @@
 import 'dart:developer';
 import 'package:intl/intl.dart';
 import 'package:flutter/services.dart';
-import 'package:scribble_etome/functions.dart';
 import 'package:scribble_etome/models.dart';
 
 class CanvasEtomeOptions {

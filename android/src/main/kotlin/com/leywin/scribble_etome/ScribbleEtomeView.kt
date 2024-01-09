@@ -9,6 +9,7 @@ import android.os.Message
 import android.util.Log
 import android.view.HandwrittenView2
 import android.view.View
+import android.widget.Space
 import android.widget.TextView
 import io.flutter.plugin.common.MethodCall
 import io.flutter.plugin.common.MethodChannel
@@ -41,12 +42,8 @@ class HandwrittenView(context: Context, creationParams: Map<String?, Any?>?, cha
     }
     init {
         mHandwrittenView = layout.findViewById(R.id.handwrittenView)
-//        layout.findViewById<View>(R.id.undo).setOnClickListener { onClick(it) }
-//        layout.findViewById<View>(R.id.redo).setOnClickListener { onClick(it) }
-//        layout.findViewById<View>(R.id.clear).setOnClickListener { onClick(it) }
-//        layout.findViewById<View>(R.id.stroke).setOnClickListener { onClick(it) }
-//        layout.findViewById<View>(R.id.save).setOnClickListener { onClick(it) }
-//        strokeTv = layout.findViewById(R.id.stroke)
+        val topPaddingHeight = creationParams!!["topPaddingHeight"] as Int
+        setPadToppingHeight(topPaddingHeight)
         context.resources.displayMetrics.also {
             mScreenW = it.widthPixels
             mScreenH = it.heightPixels
@@ -57,6 +54,13 @@ class HandwrittenView(context: Context, creationParams: Map<String?, Any?>?, cha
         }
 
         mHandler.sendEmptyMessageDelayed(DELAY_REFRESH, DELAY_TIME.toLong())
+    }
+
+    fun setPadToppingHeight(padToppingHeight: Int) {
+        val spaceView = layout.findViewById<Space>(R.id.padTopping)
+        val layoutParams = spaceView.layoutParams
+        layoutParams.height = padToppingHeight
+        spaceView.layoutParams = layoutParams
     }
 
     private fun onMethodCall(call: MethodCall, result:  MethodChannel.Result, context: Context) {

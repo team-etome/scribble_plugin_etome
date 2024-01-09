@@ -34,6 +34,7 @@ class _CanvasPageState extends State<CanvasPage> {
             body: CanvasEtome(
               // bitMap: widget.bytes,
               imageName: widget.imageName ?? '',
+              // topPaddingHeight: 150,
             ),
           ),
           Positioned(
@@ -244,6 +245,7 @@ void getFunctions() async {
     }
   }
 }
+
 void makeRequest(dynamic data) async {
   Dio dio = Dio();
 
@@ -252,7 +254,6 @@ void makeRequest(dynamic data) async {
       'http://192.168.1.39:8000/api/scribble',
       data: data, // Replace with your actual data
     );
-   
 
     // Handle successful response
     print('Response data: ${response.data}');
