@@ -68,8 +68,16 @@ class HandwrittenView(
     private fun onMethodCall(call: MethodCall, result: MethodChannel.Result) {
         when (call.method) {
             "undo" -> undo()
+
             "redo" -> redo()
+
             "clear" -> clear()
+
+            "isHandwriting" -> {
+                val isHandwriting = call.argument<Boolean>("isHandwriting")
+                isHandwriting(isHandwriting ?: true)
+            }
+
             "setPenStroke" -> {
                 val strokeType = call.argument<Int>("strokeType")
                 setPenStroke(strokeType ?: 0)
@@ -93,7 +101,12 @@ class HandwrittenView(
 
             "destroy" -> onDestroy()
 
+        }
+    }
 
+    private fun isHandwriting(isHandwriting: Boolean) {
+        if (initFlag) {
+            mHandwrittenView?.isHandwriting(isHandwriting)
         }
     }
 

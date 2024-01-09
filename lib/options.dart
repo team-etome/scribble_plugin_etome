@@ -62,9 +62,17 @@ class CanvasController {
     }
   }
 
-  static Future<void> setEraserWidth(eraserWidth) async {
+  static Future<void> setEraserWidth(int eraserWidth) async {
     try {
       await platform.invokeMethod('eraserWidth', eraserWidth);
+    } catch (e) {
+      log("Error invoking setEraserWidth method: $e");
+    }
+  }
+
+  static Future<void> isHandwriting(bool isHandwriting) async {
+    try {
+      await platform.invokeMethod('isHandwriting', isHandwriting);
     } catch (e) {
       log("Error invoking setEraserWidth method: $e");
     }
