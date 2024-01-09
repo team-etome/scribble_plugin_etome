@@ -1,6 +1,6 @@
 name: scribble_etome
 description: "A flutter plugin to integrate scribble sdk of jzztech to flutter app"
-version: 1.0.2
+version: 1.0.3
 homepage:
 
 environment:
