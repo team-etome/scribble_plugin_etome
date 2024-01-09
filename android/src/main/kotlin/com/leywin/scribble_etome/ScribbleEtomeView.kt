@@ -244,6 +244,16 @@ class HandwrittenView(
             val fileName =
                 imageName ?: SimpleDateFormat("yyyyMMdd-HHmmss", Locale.getDefault()).format(Date())
             val filePath = "$HANDWRITE_SAVE_PATH${fileName}.png"
+            val file = File(filePath)
+
+            if (file.exists()) {
+                val deleted = file.delete()
+                if (!deleted) {
+                    val errMsg = "Failed to delete existing file: $filePath"
+                    Log.e("HandwrittenView", errMsg)
+                    return Pair(false, errMsg)
+                }
+            }
 
             return try {
                 FileOutputStream(filePath).use { fos ->
