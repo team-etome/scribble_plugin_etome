@@ -75,6 +75,16 @@ class HandwrittenView(
                 setPenStroke(strokeType ?: 0)
             }
 
+            "setPenWidth" -> {
+                val penWidth = call.argument<Int>("penWidth")
+                setPenWidth(penWidth ?: 1)
+            }
+
+            "setEraserWidth" -> {
+                val eraserWidth = call.argument<Int>("eraserWidth")
+                setEraserWidth(eraserWidth ?: 1)
+            }
+
             "save" -> {
                 val imageName = call.argument<String>("imageName")
 
@@ -82,11 +92,20 @@ class HandwrittenView(
             }
 
             "destroy" -> onDestroy()
-//            "load" -> {
-//                val bitArr = call.argument<ByteArray>("bitMap")
-//                load(bitArr!!,context,result)
-//            }
 
+
+        }
+    }
+
+    private fun setEraserWidth(eraserWidth: Int) {
+        if (initFlag) {
+            mHandwrittenView?.eraserWidth = eraserWidth
+        }
+    }
+
+    private fun setPenWidth(penWidth: Int) {
+        if (initFlag) {
+            mHandwrittenView?.penWidth = penWidth
         }
     }
 

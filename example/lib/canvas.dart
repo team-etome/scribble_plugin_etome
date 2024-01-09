@@ -57,7 +57,7 @@ class _CanvasPageState extends State<CanvasPage> {
                   ),
                   TextButton(
                     onPressed: () {
-                      CanvasEtomeOptions.undo();
+                      CanvasController.undo();
                     },
                     child: const Text(
                       'Undo',
@@ -66,7 +66,7 @@ class _CanvasPageState extends State<CanvasPage> {
                   ),
                   TextButton(
                     onPressed: () {
-                      CanvasEtomeOptions.redo();
+                      CanvasController.redo();
                     },
                     child: const Text(
                       'Redo',
@@ -75,7 +75,7 @@ class _CanvasPageState extends State<CanvasPage> {
                   ),
                   TextButton(
                     onPressed: () {
-                      CanvasEtomeOptions.clear();
+                      CanvasController.clear();
                     },
                     child: const Text(
                       'Clear',
@@ -84,7 +84,7 @@ class _CanvasPageState extends State<CanvasPage> {
                   ),
                   TextButton(
                     onPressed: () {
-                      CanvasEtomeOptions.setPenType();
+                      CanvasController.setPenType();
                     },
                     child: const Text(
                       'Stroke',
@@ -95,7 +95,7 @@ class _CanvasPageState extends State<CanvasPage> {
                     onPressed: () async {
                       final directoryPath = await getExternalStorageDirectory();
                       final SaveResult saveResult =
-                          await CanvasEtomeOptions.save(directoryPath!.path);
+                          await CanvasController.save(directoryPath!.path);
                       // // final isSaved = await saveToFile(
                       // //     saveResult.bitmap, saveResult.dateTimeNow);
 

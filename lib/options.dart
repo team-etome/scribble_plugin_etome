@@ -3,7 +3,7 @@ import 'package:intl/intl.dart';
 import 'package:flutter/services.dart';
 import 'package:scribble_etome/models.dart';
 
-class CanvasEtomeOptions {
+class CanvasController {
   static const platform = MethodChannel('canvas_etome_options');
 
   static Future<void> undo() async {
@@ -54,6 +54,22 @@ class CanvasEtomeOptions {
     }
   }
 
+  static Future<void> setPenWidth(int penWidth) async {
+    try {
+      await platform.invokeMethod('penWidth', penWidth);
+    } catch (e) {
+      log("Error invoking setPenWidth method: $e");
+    }
+  }
+
+  static Future<void> setEraserWidth(eraserWidth) async {
+    try {
+      await platform.invokeMethod('eraserWidth', eraserWidth);
+    } catch (e) {
+      log("Error invoking setEraserWidth method: $e");
+    }
+  }
+
   static save(String directoryPath) async {
     try {
       DateTime now = DateTime.now();
@@ -61,7 +77,6 @@ class CanvasEtomeOptions {
       final bitmap =
           await platform.invokeMethod('save', {"imageName": formattedDate});
       destroy();
-      print(bitmap.toString());
       return SaveResult(
         bitmap: bitmap,
         dateTimeNow: formattedDate,
