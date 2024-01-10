@@ -57,7 +57,8 @@ class CanvasController {
   // Method to set the drawing tool (pen type).
   static Future<void> setDrawingTool(DrawingTool drawingType) async {
     try {
-      await platform.invokeMethod('strokeType', drawingType.index);
+      await platform
+          .invokeMethod('setPenStroke', {'strokeType': drawingType.index});
     } catch (e) {
       log("Error invoking setDrawingTool method: $e");
     }
@@ -66,7 +67,7 @@ class CanvasController {
   // Method to set the width of the pen.
   static Future<void> setPenWidth(int penWidth) async {
     try {
-      await platform.invokeMethod('penWidth', penWidth);
+      await platform.invokeMethod('setPenWidth', {'penWidth': penWidth});
     } catch (e) {
       log("Error invoking setPenWidth method: $e");
     }
@@ -75,7 +76,8 @@ class CanvasController {
   // Method to set the width of the eraser.
   static Future<void> setEraserWidth(int eraserWidth) async {
     try {
-      await platform.invokeMethod('eraserWidth', eraserWidth);
+      await platform
+          .invokeMethod('setEraserWidth', {'eraserWidth': eraserWidth});
     } catch (e) {
       log("Error invoking setEraserWidth method: $e");
     }
@@ -84,7 +86,8 @@ class CanvasController {
   // Method to toggle handwriting mode.
   static Future<void> isHandwriting(bool isHandwriting) async {
     try {
-      await platform.invokeMethod('isHandwriting', isHandwriting);
+      await platform
+          .invokeMethod('isHandwriting', {'isHandwriting': isHandwriting});
     } catch (e) {
       log("Error invoking isHandwriting method: $e");
     }
