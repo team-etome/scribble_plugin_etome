@@ -54,6 +54,46 @@ class CanvasController {
     }
   }
 
+  static Future<void> get setBallPointPen async {
+    try {
+      await platform.invokeMethod('strokeType', 0);
+    } catch (e) {
+      log("Error invoking setPenstroke method: $e");
+    }
+  }
+
+  static Future<void> get setFountainPen async {
+    try {
+      await platform.invokeMethod('strokeType', 1);
+    } catch (e) {
+      log("Error invoking setPenstroke method: $e");
+    }
+  }
+
+  static Future<void> get setPencil async {
+    try {
+      await platform.invokeMethod('strokeType', 2);
+    } catch (e) {
+      log("Error invoking setPenstroke method: $e");
+    }
+  }
+
+  static Future<void> get setLinearErasing async {
+    try {
+      await platform.invokeMethod('strokeType', 3);
+    } catch (e) {
+      log("Error invoking setPenstroke method: $e");
+    }
+  }
+
+  static Future<void> get setAreaErasing async {
+    try {
+      await platform.invokeMethod('strokeType', 4);
+    } catch (e) {
+      log("Error invoking setPenstroke method: $e");
+    }
+  }
+
   static Future<void> setPenWidth(int penWidth) async {
     try {
       await platform.invokeMethod('penWidth', penWidth);
