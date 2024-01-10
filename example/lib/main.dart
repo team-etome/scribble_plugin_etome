@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:hive_flutter/hive_flutter.dart';
+import 'package:scribble_etome_example/booklet_page.dart';
 import 'package:scribble_etome_example/canvas.dart';
 import 'package:scribble_etome_example/models/image_model.dart';
 
@@ -21,7 +22,7 @@ class _MyAppState extends State<MyApp> {
   @override
   Widget build(BuildContext context) {
     return const MaterialApp(
-      home: CanvasPage(),
+      home: BookletPage(),
     );
   }
 }
