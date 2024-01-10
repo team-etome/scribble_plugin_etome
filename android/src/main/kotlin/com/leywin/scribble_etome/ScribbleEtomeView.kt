@@ -33,6 +33,7 @@ class HandwrittenView(
     var mHandwrittenView: HandwrittenView2? = null
     private val mHandler = InitHandler(creationParams)
     private var layout: View = View.inflate(context, R.layout.activity_main, null)
+    private var savePath = HANDWRITE_SAVE_PATH
 
     override fun getView(): View {
         return layout
@@ -160,7 +161,7 @@ class HandwrittenView(
             val byteArrayOutputStream = ByteArrayOutputStream()
             bitmap.compress(Bitmap.CompressFormat.PNG, 90, byteArrayOutputStream)
             val byteArray = byteArrayOutputStream.toByteArray()
-            val (isSaved, errorMessage) = saveBitmap(bitmap, imageName)
+            val (isSaved, errorMessage) = saveBitmap(bitmap, imageName, savePath)
             if (isSaved) {
                 result.success(byteArray)
             } else {
@@ -265,7 +266,7 @@ class HandwrittenView(
         private const val HANDWRITE_SAVE_PATH = "/storage/emulated/0/Etome/"
         private val TAG = HandwrittenView::class.java.simpleName
 
-        fun saveBitmap(bitmap: Bitmap, imageName: String?): Pair<Boolean, String?> {
+        fun saveBitmap(bitmap: Bitmap, imageName: String?, savePath: String): Pair<Boolean, String?> {
             val directory = File(HANDWRITE_SAVE_PATH)
             if (!directory.exists() && !directory.mkdirs()) {
                 val errMsg = "Failed to create directory: $HANDWRITE_SAVE_PATH"

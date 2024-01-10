@@ -47,8 +47,7 @@ class _CanvasPageState extends State<CanvasPage> {
                 children: [
                   TextButton(
                     onPressed: () {
-                      // CanvasEtomeOptions.load(widget.bytes!);
-                      getFunctions();
+                      getData();
                     },
                     child: const Text(
                       'Load',
@@ -217,7 +216,7 @@ class _CanvasPageState extends State<CanvasPage> {
 //   }
 // }
 
-void getFunctions() async {
+void getData() async {
   Dio dio = Dio();
 
   try {
@@ -226,7 +225,7 @@ void getFunctions() async {
     //   data: data, // Replace with your actual data
     // );
     Response response = await dio.get(
-      'http://192.168.1.39:8000/api/scribble',
+      'http://192.168.1.51:8000/api/scribble',
       // Replace with your actual data
     );
 
@@ -251,7 +250,7 @@ void makeRequest(dynamic data) async {
 
   try {
     Response response = await dio.post(
-      'http://192.168.1.39:8000/api/scribble',
+      'http://192.168.1.51:8000/api/scribble',
       data: data, // Replace with your actual data
     );
 
