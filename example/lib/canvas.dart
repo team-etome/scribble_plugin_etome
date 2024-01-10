@@ -83,7 +83,7 @@ class _CanvasPageState extends State<CanvasPage> {
                   ),
                   TextButton(
                     onPressed: () {
-                      CanvasController.setPenType();
+                      CanvasController.setDrawingTool(DrawingTool.ballPointPen);
                     },
                     child: const Text(
                       'Stroke',

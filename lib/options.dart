@@ -3,9 +3,13 @@ import 'package:intl/intl.dart';
 import 'package:flutter/services.dart';
 import 'package:scribble_etome/models.dart';
 
+// Enum to represent different drawing tools.
+enum DrawingTool { ballPointPen, fountainPen, pencil, linearEraser, areaEraser }
+
 class CanvasController {
   static const platform = MethodChannel('canvas_etome_options');
 
+  // Method to undo the last action.
   static Future<void> undo() async {
     try {
       await platform.invokeMethod('undo');
@@ -14,6 +18,7 @@ class CanvasController {
     }
   }
 
+  // Method to redo the last undone action.
   static Future<void> redo() async {
     try {
       await platform.invokeMethod('redo');
@@ -22,6 +27,7 @@ class CanvasController {
     }
   }
 
+  // Method to clear the canvas.
   static Future<void> clear() async {
     try {
       await platform.invokeMethod('clear');
@@ -30,6 +36,7 @@ class CanvasController {
     }
   }
 
+  // Method to destroy the canvas.
   static Future<void> destroy() async {
     try {
       await platform.invokeMethod('destroy');
@@ -38,6 +45,7 @@ class CanvasController {
     }
   }
 
+  // Method to load a drawing from a byte array.
   static Future<void> load(List<int> byteArray) async {
     try {
       await platform.invokeMethod('load', {'bitmap': byteArray});
@@ -46,54 +54,16 @@ class CanvasController {
     }
   }
 
-  static Future<void> setPenType() async {
+  // Method to set the drawing tool (pen type).
+  static Future<void> setDrawingTool(DrawingTool drawingType) async {
     try {
-      await platform.invokeMethod('strokeType', 1);
+      await platform.invokeMethod('strokeType', drawingType.index);
     } catch (e) {
-      log("Error invoking setPenstroke method: $e");
+      log("Error invoking setDrawingTool method: $e");
     }
   }
 
-  static Future<void> get setBallPointPen async {
-    try {
-      await platform.invokeMethod('strokeType', 0);
-    } catch (e) {
-      log("Error invoking setPenstroke method: $e");
-    }
-  }
-
-  static Future<void> get setFountainPen async {
-    try {
-      await platform.invokeMethod('strokeType', 1);
-    } catch (e) {
-      log("Error invoking setPenstroke method: $e");
-    }
-  }
-
-  static Future<void> get setPencil async {
-    try {
-      await platform.invokeMethod('strokeType', 2);
-    } catch (e) {
-      log("Error invoking setPenstroke method: $e");
-    }
-  }
-
-  static Future<void> get setLinearErasing async {
-    try {
-      await platform.invokeMethod('strokeType', 3);
-    } catch (e) {
-      log("Error invoking setPenstroke method: $e");
-    }
-  }
-
-  static Future<void> get setAreaErasing async {
-    try {
-      await platform.invokeMethod('strokeType', 4);
-    } catch (e) {
-      log("Error invoking setPenstroke method: $e");
-    }
-  }
-
+  // Method to set the width of the pen.
   static Future<void> setPenWidth(int penWidth) async {
     try {
       await platform.invokeMethod('penWidth', penWidth);
@@ -102,6 +72,7 @@ class CanvasController {
     }
   }
 
+  // Method to set the width of the eraser.
   static Future<void> setEraserWidth(int eraserWidth) async {
     try {
       await platform.invokeMethod('eraserWidth', eraserWidth);
@@ -110,14 +81,16 @@ class CanvasController {
     }
   }
 
+  // Method to toggle handwriting mode.
   static Future<void> isHandwriting(bool isHandwriting) async {
     try {
       await platform.invokeMethod('isHandwriting', isHandwriting);
     } catch (e) {
-      log("Error invoking setEraserWidth method: $e");
+      log("Error invoking isHandwriting method: $e");
     }
   }
 
+  // Method to save the canvas drawing.
   static save(String directoryPath) async {
     try {
       DateTime now = DateTime.now();
