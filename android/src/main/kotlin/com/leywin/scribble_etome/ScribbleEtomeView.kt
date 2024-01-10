@@ -47,6 +47,7 @@ class HandwrittenView(
         mHandwrittenView = layout.findViewById(R.id.handwrittenView)
         val topPaddingHeight = creationParams!!["topPaddingHeight"] as Int
         setPadToppingHeight(topPaddingHeight)
+
         context.resources.displayMetrics.also {
             mScreenW = it.widthPixels
             mScreenH = it.heightPixels
@@ -86,7 +87,7 @@ class HandwrittenView(
 
             "setPenWidth" -> {
                 val penWidth = call.argument<Int>("penWidth")
-                setPenWidth(penWidth ?: 1)
+                setPenWidth(penWidth ?: 0)
             }
 
             "setEraserWidth" -> {
@@ -227,6 +228,9 @@ class HandwrittenView(
                                 Rect(mFilterLeft, mFilterTop, mFilterRight, mFilterBottom)
                             )
                         }
+                        mHandwrittenView!!.penWidth = 3
+                        mHandwrittenView!!.setPenStroke(0)
+
                         initFlag = true
                         val imageName = creationParams!!["imageName"] as String
                         val bitmap = loadBitmap(imageName)
@@ -267,16 +271,16 @@ class HandwrittenView(
         private val TAG = HandwrittenView::class.java.simpleName
 
         fun saveBitmap(bitmap: Bitmap, imageName: String?, savePath: String): Pair<Boolean, String?> {
-            val directory = File(HANDWRITE_SAVE_PATH)
+            val directory = File(savePath)
             if (!directory.exists() && !directory.mkdirs()) {
-                val errMsg = "Failed to create directory: $HANDWRITE_SAVE_PATH"
+                val errMsg = "Failed to create directory: $savePath"
                 Log.e("HandwrittenView", errMsg)
                 return Pair(false, errMsg)
             }
 
             val fileName =
                 imageName ?: SimpleDateFormat("yyyyMMdd-HHmmss", Locale.getDefault()).format(Date())
-            val filePath = "$HANDWRITE_SAVE_PATH${fileName}.png"
+            val filePath = "$savePath${fileName}.png"
             val file = File(filePath)
 
             if (file.exists()) {
