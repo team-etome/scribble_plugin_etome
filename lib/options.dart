@@ -99,7 +99,7 @@ class CanvasController {
       DateTime now = DateTime.now();
       String formattedDate = DateFormat('yyyyMMdd-HHmmss').format(now);
       final bitmap =
-          await platform.invokeMethod('save', {"imageName": formattedDate});
+          await platform.invokeMethod('save', {"imageName": directoryPath});
       destroy();
       return SaveResult(
         bitmap: bitmap,
