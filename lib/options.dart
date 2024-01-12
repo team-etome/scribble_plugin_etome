@@ -46,9 +46,9 @@ class CanvasController {
   }
 
   // Method to load a drawing from a byte array.
-  static Future<void> load(List<int> byteArray) async {
+  static Future<void> load(String directoryPath) async {
     try {
-      await platform.invokeMethod('load', {'bitmap': byteArray});
+      await platform.invokeMethod('load', {'directoryPath': directoryPath});
     } catch (e) {
       log("Error invoking load method: $e");
     }
@@ -100,7 +100,7 @@ class CanvasController {
       String formattedDate = DateFormat('yyyyMMdd-HHmmss').format(now);
       final bitmap =
           await platform.invokeMethod('save', {"imageName": directoryPath});
-      destroy();
+      clear();
       return SaveResult(
         bitmap: bitmap,
         dateTimeNow: formattedDate,
