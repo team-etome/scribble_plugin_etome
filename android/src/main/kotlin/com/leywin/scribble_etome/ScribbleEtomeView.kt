@@ -100,8 +100,18 @@ class HandwrittenView(
                 save(result, imageName!!)
             }
 
+            "load" -> {
+                val directoryPath = call.argument<String>("directoryPath")
+                load(result, directoryPath!!)
+            }
+
             "destroy" -> onDestroy()
         }
+    }
+
+
+    private fun load(result: MethodChannel.Result, directoryPath: String) {
+        loadBitmap(directoryPath);
     }
 
     private fun isHandwriting(isHandwriting: Boolean) {
@@ -268,7 +278,11 @@ class HandwrittenView(
         private const val HANDWRITE_SAVE_PATH = "/storage/emulated/0/Etome/"
         private val TAG = HandwrittenView::class.java.simpleName
 
-        fun saveBitmap(bitmap: Bitmap, imageName: String?, savePath: String): Pair<Boolean, String?> {
+        fun saveBitmap(
+            bitmap: Bitmap,
+            imageName: String?,
+            savePath: String
+        ): Pair<Boolean, String?> {
             val directory = File(savePath)
             if (!directory.exists() && !directory.mkdirs()) {
                 val errMsg = "Failed to create directory: $savePath"
