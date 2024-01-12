@@ -97,12 +97,10 @@ class HandwrittenView(
 
             "save" -> {
                 val imageName = call.argument<String>("imageName")
-
                 save(result, imageName!!)
             }
 
             "destroy" -> onDestroy()
-
         }
     }
 
