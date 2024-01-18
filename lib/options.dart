@@ -9,7 +9,7 @@ enum DrawingTool { ballPointPen, fountainPen, pencil, linearEraser, areaEraser }
 class CanvasController {
   static const platform = MethodChannel('canvas_etome_options');
 
-  // Method to undo the last action.
+  /// Method to undo the last action.
   static Future<void> undo() async {
     try {
       await platform.invokeMethod('undo');
@@ -18,7 +18,7 @@ class CanvasController {
     }
   }
 
-  // Method to redo the last undone action.
+  /// Method to redo the last undone action.
   static Future<void> redo() async {
     try {
       await platform.invokeMethod('redo');
@@ -27,7 +27,7 @@ class CanvasController {
     }
   }
 
-  // Method to clear the canvas.
+  /// Method to clear the canvas.
   static Future<void> clear() async {
     try {
       await platform.invokeMethod('clear');
@@ -36,7 +36,7 @@ class CanvasController {
     }
   }
 
-  // Method to destroy the canvas.
+  /// Method to destroy the canvas.
   static Future<void> destroy() async {
     try {
       await platform.invokeMethod('destroy');
@@ -45,7 +45,7 @@ class CanvasController {
     }
   }
 
-  // Method to load a drawing from a byte array.
+  /// Method to load a drawing from a byte array.
   static Future<void> load(String directoryPath) async {
     try {
       await platform.invokeMethod('load', {'directoryPath': directoryPath});
@@ -54,7 +54,7 @@ class CanvasController {
     }
   }
 
-  // Method to set the drawing tool (pen type).
+  /// Method to set the drawing tool (pen type).
   static Future<void> setDrawingTool(DrawingTool drawingType) async {
     try {
       await platform
@@ -64,7 +64,7 @@ class CanvasController {
     }
   }
 
-  // Method to set the width of the pen.
+  /// Method to set the width of the pen.
   static Future<void> setPenWidth(int penWidth) async {
     try {
       await platform.invokeMethod('setPenWidth', {'penWidth': penWidth});
@@ -73,7 +73,7 @@ class CanvasController {
     }
   }
 
-  // Method to set the width of the eraser.
+  /// Method to set the width of the eraser.
   static Future<void> setEraserWidth(int eraserWidth) async {
     try {
       await platform
@@ -83,7 +83,7 @@ class CanvasController {
     }
   }
 
-  // Method to toggle handwriting mode.
+  /// Method to toggle handwriting mode.
   static Future<void> isHandwriting(bool isHandwriting) async {
     try {
       await platform
@@ -93,7 +93,7 @@ class CanvasController {
     }
   }
 
-  // Method to save the canvas drawing.
+  /// Method to save the canvas drawing.
   static save(String directoryPath) async {
     try {
       DateTime now = DateTime.now();
