@@ -1,3 +1,4 @@
+///A class that contains the save result, it has bitmap, dateTime and directoryPath
 class SaveResult {
   final List<int> bitmap;
   final String dateTimeNow;

@@ -3,7 +3,7 @@ import 'package:intl/intl.dart';
 import 'package:flutter/services.dart';
 import 'package:scribble_etome/models.dart';
 
-// Enum to represent different drawing tools.
+/// Enum to represent different drawing tools.
 enum DrawingTool { ballPointPen, fountainPen, pencil, linearEraser, areaEraser }
 
 class CanvasController {

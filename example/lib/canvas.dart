@@ -1,10 +1,5 @@
-import 'dart:io';
-
-import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:path_provider/path_provider.dart';
-import 'package:permission_handler/permission_handler.dart';
-import 'package:scribble_etome/models.dart';
 import 'package:scribble_etome/scribble_etome.dart';
 import 'package:scribble_etome_example/booklet_page.dart';
 import 'package:scribble_etome_example/models/image_model.dart';
@@ -35,6 +30,8 @@ class _CanvasPageState extends State<CanvasPage> {
               // bitMap: widget.bytes,
               imageName: widget.imageName ?? '',
               // topPaddingHeight: 150,
+              drawingTool: DrawingTool.pencil,
+              penWidthValue: 10,
             ),
           ),
           Positioned(
@@ -46,9 +43,7 @@ class _CanvasPageState extends State<CanvasPage> {
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
                   TextButton(
-                    onPressed: () {
-                      getData();
-                    },
+                    onPressed: () {},
                     child: const Text(
                       'Load',
                       style: TextStyle(color: Colors.black),
@@ -101,12 +96,8 @@ class _CanvasPageState extends State<CanvasPage> {
                       // final isSaved = await FileStorage.writeCounter(
                       //     saveResult.bitmap, "geeksforgeeks.png");
 
-                      Map<String, dynamic> map = {
-                        'image_name': saveResult.dateTimeNow,
-                        'data': saveResult.bitmap,
-                      };
-
-                      makeRequest(map);
+               
+               
 
                       // dio.post('http://192.168.1.51:8000/api/scribble',
                       //     data: map);
@@ -130,7 +121,7 @@ class _CanvasPageState extends State<CanvasPage> {
                                 dateTime: saveResult.dateTimeNow,
                                 byteList: saveResult.bitmap));
                       }
-
+                      if (!mounted) return;
                       Navigator.push(context, MaterialPageRoute(
                         builder: (context) {
                           return const BookletPage();
@@ -216,56 +207,4 @@ class _CanvasPageState extends State<CanvasPage> {
 //   }
 // }
 
-void getData() async {
-  Dio dio = Dio();
 
-  try {
-    // Response response = await dio.post(
-    //   'http://192.168.1.39:8000/api/scribble',
-    //   data: data, // Replace with your actual data
-    // );
-    Response response = await dio.get(
-      'http://192.168.1.51:8000/api/scribble',
-      // Replace with your actual data
-    );
-
-    // Handle successful response
-    print('Response data: ${response.data}');
-  } catch (error) {
-    // Handle DioError
-    if (error is DioException) {
-      // The request was made and the server responded with an error status code
-      print('DioError: ${error.response?.statusCode}');
-      print('Response data: ${error.response?.data}');
-      print('Error message: ${error.message}');
-    } else {
-      // Something else went wrong
-      print('Error: $error');
-    }
-  }
-}
-
-void makeRequest(dynamic data) async {
-  Dio dio = Dio();
-
-  try {
-    Response response = await dio.post(
-      'http://192.168.1.51:8000/api/scribble',
-      data: data, // Replace with your actual data
-    );
-
-    // Handle successful response
-    print('Response data: ${response.data}');
-  } catch (error) {
-    // Handle DioError
-    if (error is DioException) {
-      // The request was made and the server responded with an error status code
-      print('DioError: ${error.response?.statusCode}');
-      print('Response data: ${error.response?.data}');
-      print('Error message: ${error.message}');
-    } else {
-      // Something else went wrong
-      print('Error: $error');
-    }
-  }
-}

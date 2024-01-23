@@ -2,7 +2,6 @@ import 'dart:typed_data';
 import 'package:flutter/material.dart';
 import 'package:scribble_etome_example/canvas.dart';
 import 'package:scribble_etome_example/models/image_model.dart';
-import 'package:permission_handler/permission_handler.dart';
 
 class BookletPage extends StatefulWidget {
   const BookletPage({super.key});
