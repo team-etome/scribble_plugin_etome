@@ -100,19 +100,12 @@ class HandwrittenView(
                 save(result, imageName!!)
             }
 
-            "load" -> {
-                val directoryPath = call.argument<String>("directoryPath")
-                load(result, directoryPath!!)
-            }
-
             "destroy" -> onDestroy()
         }
     }
 
 
-    private fun load(result: MethodChannel.Result, directoryPath: String) {
-        loadBitmap(directoryPath);
-    }
+
 
     private fun isHandwriting(isHandwriting: Boolean) {
         if (initFlag) {
@@ -236,11 +229,13 @@ class HandwrittenView(
                                 Rect(mFilterLeft, mFilterTop, mFilterRight, mFilterBottom)
                             )
                         }
-                        mHandwrittenView!!.penWidth = 3
-                        mHandwrittenView!!.setPenStroke(0)
+                        val penWidthValue = creationParams!!["penWidthValue"] as Int
+                        mHandwrittenView!!.penWidth = penWidthValue
+                        val penStrokeValue = creationParams["drawingToolIndex"] as Int
+                        mHandwrittenView!!.setPenStroke(penStrokeValue)
 
                         initFlag = true
-                        val imageName = creationParams!!["imageName"] as String
+                        val imageName = creationParams["imageName"] as String
                         val bitmap = loadBitmap(imageName)
                         if (bitmap != null) {
                             mHandwrittenView!!.bitmap = bitmap
