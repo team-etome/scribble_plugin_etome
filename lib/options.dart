@@ -1,5 +1,4 @@
 import 'dart:developer';
-import 'package:intl/intl.dart';
 import 'package:flutter/services.dart';
 import 'package:scribble_etome/models.dart';
 
@@ -94,20 +93,30 @@ class CanvasController {
   }
 
   /// Method to save the canvas drawing.
-  static save(String directoryPath) async {
+  static Future<SaveResult> save(String directoryPath) async {
     try {
       DateTime now = DateTime.now();
-      String formattedDate = DateFormat('yyyyMMdd-HHmmss').format(now);
       final bitmap =
           await platform.invokeMethod('save', {"imageName": directoryPath});
       clear();
       return SaveResult(
         bitmap: bitmap,
-        dateTimeNow: formattedDate,
+        dateTimeNow: now.toString(),
         directoryPath: directoryPath,
       );
     } catch (e) {
       log("Error invoking save method: $e");
+      rethrow;
+    }
+  }
+
+  /// Method to get the current drawing bitmap.
+  static Future<List<int>> getBitmap() async {
+    try {
+      List<int> bitmap = await platform.invokeMethod('getBitmap');
+      return bitmap;
+    } catch (e) {
+      log("Error invoking getBitmap method: $e");
       rethrow;
     }
   }

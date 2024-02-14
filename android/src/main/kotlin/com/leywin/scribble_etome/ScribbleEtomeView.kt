@@ -101,10 +101,10 @@ class HandwrittenView(
             }
 
             "destroy" -> onDestroy()
+
+            "getBitmap" -> getBitmap(result)
         }
     }
-
-
 
 
     private fun isHandwriting(isHandwriting: Boolean) {
@@ -169,6 +169,19 @@ class HandwrittenView(
             } else {
                 result.error("SAVE_ERROR", errorMessage, null)
             }
+            buttonLock = false
+        }
+    }
+
+
+    private fun getBitmap(result: MethodChannel.Result) {
+        if (!buttonLock) {
+            buttonLock = true
+            val bitmap: Bitmap = mHandwrittenView!!.bitmap
+            val byteArrayOutputStream = ByteArrayOutputStream()
+            bitmap.compress(Bitmap.CompressFormat.PNG, 90, byteArrayOutputStream)
+            val byteArray = byteArrayOutputStream.toByteArray()
+            result.success(byteArray)
             buttonLock = false
         }
     }

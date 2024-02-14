@@ -77,8 +77,9 @@ class _CanvasPageState extends State<CanvasPage> {
                     ),
                   ),
                   TextButton(
-                    onPressed: () {
-                      CanvasController.setDrawingTool(DrawingTool.ballPointPen);
+                    onPressed: () async {
+                      final bitmap = await CanvasController.getBitmap();
+                      print(bitmap);
                     },
                     child: const Text(
                       'Stroke',
@@ -95,9 +96,6 @@ class _CanvasPageState extends State<CanvasPage> {
 
                       // final isSaved = await FileStorage.writeCounter(
                       //     saveResult.bitmap, "geeksforgeeks.png");
-
-               
-               
 
                       // dio.post('http://192.168.1.51:8000/api/scribble',
                       //     data: map);
