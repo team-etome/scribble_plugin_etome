@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:developer';
 import 'package:flutter/services.dart';
 import 'package:scribble_etome/models.dart';
@@ -92,6 +93,17 @@ class CanvasController {
     }
   }
 
+
+  /// Method to toggle overlay mode.
+  static Future<void> isOverlay(bool isOverlay) async {
+    try {
+      await platform
+          .invokeMethod('isOverlay', {'isOverlay': isOverlay});
+    } catch (e) {
+      log("Error invoking isOverlay method: $e");
+    }
+  }
+
   /// Method to save the canvas drawing.
   static Future<SaveResult> save(String directoryPath) async {
     try {
@@ -120,4 +132,18 @@ class CanvasController {
       rethrow;
     }
   }
+
+  /// Method to load the bitmap from bytearray.
+  static Future<void> loadBitmapFromByteArray(Uint8List byteArray) async {
+    try {
+      String base64String = base64Encode(byteArray);
+      await platform.invokeMethod('loadBitmapFromByteArray', {
+        'byteArray': base64String,
+      });
+    } catch (e) {
+      log("Error invoking loadBitmapFromByteArray method: $e");
+      rethrow;
+    }
+  }
+
 }

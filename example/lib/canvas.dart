@@ -1,3 +1,5 @@
+import 'dart:typed_data';
+
 import 'package:flutter/material.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:scribble_etome/scribble_etome.dart';
@@ -20,6 +22,8 @@ class CanvasPage extends StatefulWidget {
 }
 
 class _CanvasPageState extends State<CanvasPage> {
+  List<int>? currentBitmap;
+  bool isOverlay = true;
   @override
   Widget build(BuildContext context) {
     return SafeArea(
@@ -43,7 +47,14 @@ class _CanvasPageState extends State<CanvasPage> {
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
                   TextButton(
-                    onPressed: () {},
+                    onPressed: () {
+                      if (currentBitmap != null) {
+                        CanvasController.loadBitmapFromByteArray(
+                            Uint8List.fromList(currentBitmap!));
+                      } else {
+                        print('currentBitmap is empty');
+                      }
+                    },
                     child: const Text(
                       'Load',
                       style: TextStyle(color: Colors.black),
@@ -78,11 +89,17 @@ class _CanvasPageState extends State<CanvasPage> {
                   ),
                   TextButton(
                     onPressed: () async {
-                      final bitmap = await CanvasController.getBitmap();
-                      print(bitmap);
+                      // final bitmap = await CanvasController.getBitmap();
+                      // setState(() {
+                      //   currentBitmap = bitmap;
+                      // });
+                      CanvasController.isOverlay(isOverlay);
+                      setState(() {
+                        isOverlay = !isOverlay;
+                      });
                     },
                     child: const Text(
-                      'Stroke',
+                      'Overlay',
                       style: TextStyle(color: Colors.black),
                     ),
                   ),

@@ -8,6 +8,7 @@ import android.graphics.Rect
 import android.os.Handler
 import android.os.Looper
 import android.os.Message
+import android.util.Base64
 import android.util.Log
 import android.view.HandwrittenView2
 import android.view.View
@@ -80,6 +81,11 @@ class HandwrittenView(
                 isHandwriting(isHandwriting ?: true)
             }
 
+            "isOverlay" -> {
+                val isOverlay = call.argument<Boolean>("isOverlay")
+                isOverlay(isOverlay ?: true)
+            }
+
             "setPenStroke" -> {
                 val strokeType = call.argument<Int>("strokeType")
                 setPenStroke(strokeType ?: 0)
@@ -103,13 +109,50 @@ class HandwrittenView(
             "destroy" -> onDestroy()
 
             "getBitmap" -> getBitmap(result)
+
+            "loadBitmapFromByteArray" -> {
+                val byteArray = call.argument<ByteArray>("byteArray")
+                byteArray?.let {
+                    loadBitmapFromByteArray(it, result)
+                } ?: run {
+                    result.error("NULL_BYTE_ARRAY", "The provided byte array was null", null)
+                }
+            }
+
         }
     }
+
+    private fun loadBitmapFromByteArray(byteArray: ByteArray, result: MethodChannel.Result) {
+        try {
+            val bitArray = Base64.decode(byteArray, Base64.DEFAULT)
+            val bitmap = BitmapFactory.decodeByteArray(bitArray, 0, byteArray.size)
+            if (bitmap == null) {
+                result.error("BITMAP_ERROR", "Failed to decode bitmap", null)
+                return
+            }
+            mHandwrittenView?.let {
+                it.bitmap = bitmap
+                it.refreshBitmap()
+                result.success(null)
+            } ?: run {
+                result.error("VIEW_NULL", "HandwrittenView is null", null)
+            }
+        } catch (e: Exception) {
+            Log.e("HandwrittenView", "Error decoding bitmap", e)
+            result.error("BITMAP_ERROR", "byteArray size = ${byteArray.size}, Failed to decode bitmap: ${e.localizedMessage}", null)
+        }
+    }
+
 
 
     private fun isHandwriting(isHandwriting: Boolean) {
         if (initFlag) {
             mHandwrittenView?.isHandwriting(isHandwriting)
+        }
+    }
+   private fun isOverlay(isOverlay: Boolean) {
+        if (initFlag) {
+            mHandwrittenView?.isOverlay(isOverlay)
         }
     }
 
