@@ -47,6 +47,7 @@ class HandwrittenView(
     init {
         mHandwrittenView = layout.findViewById(R.id.handwrittenView)
         val topPaddingHeight = creationParams!!["topPaddingHeight"] as Int
+        savePath = creationParams["saveFolderPath"] as String? ?: HANDWRITE_SAVE_PATH
         setPadToppingHeight(topPaddingHeight)
 
         context.resources.displayMetrics.also {

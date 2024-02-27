@@ -33,6 +33,7 @@ class _CanvasPageState extends State<CanvasPage> {
             body: CanvasEtome(
               // bitMap: widget.bytes,
               imageName: widget.imageName ?? '',
+              saveFolder: 'EtomeRocks',
               // topPaddingHeight: 150,
               drawingTool: DrawingTool.pencil,
               penWidthValue: 10,
@@ -105,9 +106,9 @@ class _CanvasPageState extends State<CanvasPage> {
                   ),
                   TextButton(
                     onPressed: () async {
-                      final directoryPath = await getExternalStorageDirectory();
+                      // final directoryPath = await getExternalStorageDirectory();
                       final SaveResult saveResult =
-                          await CanvasController.save(directoryPath!.path);
+                          await CanvasController.save('wow');
                       // // final isSaved = await saveToFile(
                       // //     saveResult.bitmap, saveResult.dateTimeNow);
 
