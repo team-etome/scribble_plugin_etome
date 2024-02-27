@@ -308,7 +308,8 @@ class HandwrittenView(
 
                         initFlag = true
                         val imageName = creationParams["imageName"] as String
-                        val bitmap = loadBitmap(imageName)
+                        savePath = creationParams["saveFolderPath"] as String? ?: HANDWRITE_SAVE_PATH
+                        val bitmap = loadBitmap(imageName, savePath)
                         if (bitmap != null) {
                             mHandwrittenView!!.bitmap = bitmap
                             mHandwrittenView!!.refreshBitmap()
@@ -384,8 +385,8 @@ class HandwrittenView(
         }
 
 
-        fun loadBitmap(imageName: String): Bitmap? {
-            val filePath = "$HANDWRITE_SAVE_PATH${imageName}.png"
+        fun loadBitmap(imageName: String, savePath: String): Bitmap? {
+            val filePath = "$savePath${imageName}.png"
             val file = File(filePath)
 
             if (!file.exists()) {
