@@ -8,18 +8,20 @@ class CanvasEtome extends StatelessWidget {
       {super.key,
       this.topPaddingHeight = 0,
       this.imageName = '',
-      this.saveFolderPath,
+      this.saveFolder,
       this.drawingTool = DrawingTool.ballPointPen,
       this.penWidthValue = 3});
   final int topPaddingHeight;
   final String imageName;
-  final String? saveFolderPath;
+  final String? saveFolder;
   final DrawingTool drawingTool;
   final int penWidthValue;
 
   @override
   Widget build(BuildContext context) {
     const String viewType = 'leywin/etome/scribble_etome';
+    String? saveFolderPath =
+        saveFolder != null ? '/storage/emulated/0/$saveFolder/' : null;
     final Map<String, dynamic> creationParams = <String, dynamic>{
       "topPaddingHeight": topPaddingHeight,
       "imageName": imageName,
