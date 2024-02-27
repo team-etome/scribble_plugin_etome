@@ -87,6 +87,14 @@ class HandwrittenView(
                 isOverlay(isOverlay ?: true)
             }
 
+            "isWriting" -> {
+                result.success(isWriting())
+            }
+
+            "isEdited" -> {
+                result.success(isEdited())
+            }
+
             "setPenStroke" -> {
                 val strokeType = call.argument<Int>("strokeType")
                 setPenStroke(strokeType ?: 0)
@@ -156,9 +164,16 @@ class HandwrittenView(
             mHandwrittenView?.isOverlay(isOverlay)
         }
     }
+    private fun isWriting(): Boolean {
+        return mHandwrittenView!!.isWriting
+    }
+    private fun isEdited(): Boolean {
+        return mHandwrittenView!!.isEdited
+    }
 
     private fun setEraserWidth(eraserWidth: Int) {
         if (initFlag) {
+            mHandwrittenView?.eraserWidth = eraserWidth
             mHandwrittenView?.eraserWidth = eraserWidth
         }
     }
