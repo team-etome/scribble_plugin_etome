@@ -93,12 +93,10 @@ class CanvasController {
     }
   }
 
-
   /// Method to toggle overlay mode.
   static Future<void> isOverlay(bool isOverlay) async {
     try {
-      await platform
-          .invokeMethod('isOverlay', {'isOverlay': isOverlay});
+      await platform.invokeMethod('isOverlay', {'isOverlay': isOverlay});
     } catch (e) {
       log("Error invoking isOverlay method: $e");
     }
@@ -146,4 +144,25 @@ class CanvasController {
     }
   }
 
+  /// Checks if the canvas is currently being written on.
+  static Future<bool> isWriting() async {
+    try {
+      bool isWriting = await platform.invokeMethod('isWriting');
+      return isWriting;
+    } catch (e) {
+      log("Error invoking isWriting method: $e");
+      rethrow;
+    }
+  }
+
+  /// Checks if the canvas has been edited.
+  static Future<bool> isEdited() async {
+    try {
+      bool isEdited = await platform.invokeMethod('isEdited');
+      return isEdited;
+    } catch (e) {
+      log("Error invoking isWriting method: $e");
+      rethrow;
+    }
+  }
 }
