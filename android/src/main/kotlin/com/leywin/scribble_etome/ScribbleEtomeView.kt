@@ -305,10 +305,12 @@ class HandwrittenView(
                         mHandwrittenView!!.penWidth = penWidthValue
                         val penStrokeValue = creationParams["drawingToolIndex"] as Int
                         mHandwrittenView!!.setPenStroke(penStrokeValue)
-
+                        val isHandwriting = creationParams["isHandwriting"] as Boolean
+                        mHandwrittenView!!.isHandwriting(isHandwriting)
                         initFlag = true
                         val imageName = creationParams["imageName"] as String
                         savePath = creationParams["saveFolderPath"] as String? ?: HANDWRITE_SAVE_PATH
+
                         val bitmap = loadBitmap(imageName, savePath)
                         if (bitmap != null) {
                             mHandwrittenView!!.bitmap = bitmap
