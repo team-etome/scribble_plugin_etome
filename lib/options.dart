@@ -46,9 +46,9 @@ class CanvasController {
   }
 
   /// Method to load a drawing from a byte array.
-  static Future<void> load(String directoryPath) async {
+  static Future<void> load(String imageName) async {
     try {
-      await platform.invokeMethod('load', {'directoryPath': directoryPath});
+      await platform.invokeMethod('load', {'imageName': imageName});
     } catch (e) {
       log("Error invoking load method: $e");
     }

@@ -47,12 +47,14 @@ class _CanvasPageState extends State<CanvasPage> {
                 children: [
                   TextButton(
                     onPressed: () {
-                      if (currentBitmap != null) {
-                        CanvasController.loadBitmapFromByteArray(
-                            Uint8List.fromList(currentBitmap!));
-                      } else {
-                        print('currentBitmap is empty');
-                      }
+                      // if (currentBitmap != null) {
+                      //   CanvasController.loadBitmapFromByteArray(
+                      //       Uint8List.fromList(currentBitmap!));
+                      // } else {
+                      //   print('currentBitmap is empty');
+                      // }
+
+                      CanvasController.load('1');
                     },
                     child: const Text(
                       'Load',
@@ -92,13 +94,14 @@ class _CanvasPageState extends State<CanvasPage> {
                       // setState(() {
                       //   currentBitmap = bitmap;
                       // });
-                      CanvasController.isOverlay(isOverlay);
-                      setState(() {
-                        isOverlay = !isOverlay;
-                      });
+                      // CanvasController.isOverlay(isOverlay);
+                      // setState(() {
+                      //   isOverlay = !isOverlay;
+                      // });
+                      CanvasController.load('5');
                     },
                     child: const Text(
-                      'Overlay',
+                      'load2',
                       style: TextStyle(color: Colors.black),
                     ),
                   ),
