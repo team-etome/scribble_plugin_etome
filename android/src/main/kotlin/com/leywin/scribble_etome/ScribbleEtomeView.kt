@@ -331,14 +331,17 @@ class HandwrittenView(
                         val isHandwriting = creationParams["isHandwriting"] as Boolean
                         mHandwrittenView!!.isHandwriting(isHandwriting)
                         initFlag = true
-                        val imageName = creationParams["imageName"] as String
+                        val imageName = creationParams["imageName"] as String?
                         savePath = creationParams["saveFolderPath"] as String? ?: HANDWRITE_SAVE_PATH
 
-                        val bitmap = loadBitmap(imageName, savePath)
-                        if (bitmap != null) {
-                            mHandwrittenView!!.bitmap = bitmap
-                            mHandwrittenView!!.refreshBitmap()
+                        if(imageName!=null){
+                            val bitmap = loadBitmap(imageName, savePath)
+                            if (bitmap != null) {
+                                mHandwrittenView!!.bitmap = bitmap
+                                mHandwrittenView!!.refreshBitmap()
+                            }
                         }
+
                     }
                 }.start()
             }

@@ -7,13 +7,13 @@ class CanvasEtome extends StatelessWidget {
   const CanvasEtome(
       {super.key,
       this.topPaddingHeight = 0,
-      this.imageName = '',
+      this.imageName,
       this.saveFolder,
       this.drawingTool = DrawingTool.ballPointPen,
       this.penWidthValue = 3,
       this.isHandwriting = true});
   final int topPaddingHeight;
-  final String imageName;
+  final String? imageName;
   final String? saveFolder;
   final DrawingTool drawingTool;
   final int penWidthValue;
