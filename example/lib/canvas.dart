@@ -1,4 +1,3 @@
-import 'dart:typed_data';
 import 'package:flutter/material.dart';
 import 'package:scribble_etome/scribble_etome.dart';
 import 'package:scribble_etome_example/booklet_page.dart';
