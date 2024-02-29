@@ -115,6 +115,11 @@ class HandwrittenView(
                 save(result, imageName!!)
             }
 
+            "load" -> {
+                val imageName = call.argument<String>("imageName")
+                load(result, imageName!!, savePath)
+            }
+
             "destroy" -> onDestroy()
 
             "getBitmap" -> getBitmap(result)
@@ -130,6 +135,24 @@ class HandwrittenView(
 
         }
     }
+
+
+    private fun load(result: MethodChannel.Result, imageName: String, savePath: String) {
+        try {
+            val bitmap = loadBitmap(imageName, savePath)
+            if (bitmap != null) {
+                mHandwrittenView?.bitmap = bitmap
+                mHandwrittenView?.refreshBitmap()
+                result.success(null)
+            } else {
+                result.error("LOAD_BITMAP_FAILED", "Failed to load bitmap for image $imageName", null)
+            }
+        } catch (e: Exception) {
+            Log.e("HandwrittenView", "Exception in loading bitmap: ${e.localizedMessage}", e)
+            result.error("LOAD_EXCEPTION", "Exception while loading bitmap: ${e.localizedMessage}", null)
+        }
+    }
+
 
     private fun loadBitmapFromByteArray(byteArray: ByteArray, result: MethodChannel.Result) {
         try {
