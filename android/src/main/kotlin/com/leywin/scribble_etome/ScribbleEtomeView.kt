@@ -153,7 +153,7 @@ class HandwrittenView(
 
         }
     }
-    
+
     private fun refreshBitmap(){
         mHandwrittenView!!.refreshBitmap()
     }
