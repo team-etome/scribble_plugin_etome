@@ -23,6 +23,7 @@ class _CanvasPageState extends State<CanvasPage> {
   bool isOverlay = true;
   @override
   Widget build(BuildContext context) {
+    final size = MediaQuery.of(context).size;
     return SafeArea(
       child: Stack(
         children: [
@@ -36,6 +37,16 @@ class _CanvasPageState extends State<CanvasPage> {
               penWidthValue: 10,
             ),
           ),
+          if (!isOverlay)
+            Positioned(
+                top: 50,
+                left: 0,
+                right: 0,
+                child: Container(
+                  color: Colors.white,
+                  width: size.width * 0.5,
+                  height: size.height * 0.5,
+                )),
           Positioned(
             top: 0,
             child: Container(
@@ -80,10 +91,15 @@ class _CanvasPageState extends State<CanvasPage> {
                   ),
                   TextButton(
                     onPressed: () {
-                      CanvasController.clear();
+                      // CanvasController.clear();
+                      CanvasController.refreshDrawableState();
+                      setState(() {
+                        isOverlay = !isOverlay;
+                      });
+                      CanvasController.isHovered(isOverlay);
                     },
                     child: const Text(
-                      'Clear',
+                      'Hover',
                       style: TextStyle(color: Colors.black),
                     ),
                   ),
@@ -93,14 +109,11 @@ class _CanvasPageState extends State<CanvasPage> {
                       // setState(() {
                       //   currentBitmap = bitmap;
                       // });
-                      // CanvasController.isOverlay(isOverlay);
-                      // setState(() {
-                      //   isOverlay = !isOverlay;
-                      // });
-                      CanvasController.load('5');
+                      CanvasController.refreshBitmap();
+                      // CanvasController.load('5');
                     },
                     child: const Text(
-                      'load2',
+                      'Refresh',
                       style: TextStyle(color: Colors.black),
                     ),
                   ),
