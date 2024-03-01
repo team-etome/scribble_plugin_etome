@@ -123,9 +123,11 @@ class _CanvasPageState extends State<CanvasPage> {
                     onPressed: () {
                       // CanvasController.clear();
                       CanvasController.refreshDrawableState();
+                      print('isOverlay before setState $isOverlay');
                       setState(() {
                         isOverlay = !isOverlay;
                       });
+                      print('isOverlay after setState $isOverlay');
                       CanvasController.isOverlay(isOverlay);
                     },
                     child: const Text(

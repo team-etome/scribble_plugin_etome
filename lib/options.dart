@@ -96,7 +96,7 @@ class CanvasController {
   /// Method to toggle overlay mode.
   static Future<void> isOverlay(bool isOverlay) async {
     try {
-      await platform.invokeMethod('isOverlay', {'isOverlay': isOverlay});
+      await platform.invokeMethod('isOverlay', {'isOverlay': !isOverlay});
     } catch (e) {
       log("Error invoking isOverlay method: $e");
     }
@@ -227,7 +227,9 @@ class CanvasController {
   /// Method to refresh bitMap.
   static Future<void> refreshBitmap() async {
     try {
-      await platform.invokeMethod('refreshBitmap',);
+      await platform.invokeMethod(
+        'refreshBitmap',
+      );
     } catch (e) {
       log("Error invoking refreshBitmap method: $e");
     }
