@@ -165,4 +165,49 @@ class CanvasController {
       rethrow;
     }
   }
+
+  /// Method to refresh current view.
+  static Future<void> refreshCurrentView() async {
+    try {
+      await platform.invokeMethod('refreshCurrentView');
+    } catch (e) {
+      log("Error invoking refreshCurrentView method: $e");
+    }
+  }
+
+  /// Method to refresh drawable state.
+  static Future<void> refreshDrawableState() async {
+    try {
+      await platform.invokeMethod('refreshDrawableState');
+    } catch (e) {
+      log("Error invoking refreshDrawableState method: $e");
+    }
+  }
+
+  /// Method to set elevation.
+  static Future<void> setElevation(double elevation) async {
+    try {
+      await platform.invokeMethod('setElevation', {'elevation': elevation});
+    } catch (e) {
+      log("Error invoking setElevation method: $e");
+    }
+  }
+
+  /// Method to set isHovered.
+  static Future<void> isHovered(bool hovered) async {
+    try {
+      await platform.invokeMethod('isHovered', {'hovered': hovered});
+    } catch (e) {
+      log("Error invoking isHovered method: $e");
+    }
+  }
+
+  /// Method to refresh bitMap.
+  static Future<void> refreshBitmap() async {
+    try {
+      await platform.invokeMethod('refreshBitmap',);
+    } catch (e) {
+      log("Error invoking refreshBitmap method: $e");
+    }
+  }
 }

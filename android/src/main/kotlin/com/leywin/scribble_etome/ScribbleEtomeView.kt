@@ -77,6 +77,10 @@ class HandwrittenView(
 
             "clear" -> clear()
 
+            "refreshCurrentView" -> refreshCurrentView()
+
+            "refreshDrawableState" -> refreshDrawableState()
+
             "isHandwriting" -> {
                 val isHandwriting = call.argument<Boolean>("isHandwriting")
                 isHandwriting(isHandwriting ?: true)
@@ -85,6 +89,11 @@ class HandwrittenView(
             "isOverlay" -> {
                 val isOverlay = call.argument<Boolean>("isOverlay")
                 isOverlay(isOverlay ?: true)
+            }
+
+            "isHovered" -> {
+                val hovered = call.argument<Boolean>("hovered")
+                isHovered(hovered!!)
             }
 
             "isWriting" -> {
@@ -133,10 +142,36 @@ class HandwrittenView(
                 }
             }
 
+            "setElevation" -> {
+                val elevation = call.argument<Double>("elevation")
+                setElevation(elevation!!)
+            }
+
+            "refreshBitmap" -> {
+                refreshBitmap()
+            }
+
         }
     }
+    
+    private fun refreshBitmap(){
+        mHandwrittenView!!.refreshBitmap()
+    }
 
+    private fun isHovered(hovered: Boolean){
+        mHandwrittenView!!.isHovered = hovered
+    }
 
+    private fun refreshCurrentView(){
+        mHandwrittenView!!.refreshCurrentView()
+    }
+
+    private fun refreshDrawableState(){
+        mHandwrittenView!!.refreshDrawableState()
+    }
+    private fun setElevation(elevation: Double){
+        mHandwrittenView!!.elevation = elevation.toFloat()
+    }
     private fun load(result: MethodChannel.Result, imageName: String, savePath: String) {
         try {
             val bitmap = loadBitmap(imageName, savePath)
@@ -182,7 +217,7 @@ class HandwrittenView(
             mHandwrittenView?.isHandwriting(isHandwriting)
         }
     }
-   private fun isOverlay(isOverlay: Boolean) {
+    private fun isOverlay(isOverlay: Boolean) {
         if (initFlag) {
             mHandwrittenView?.isOverlay(isOverlay)
         }
