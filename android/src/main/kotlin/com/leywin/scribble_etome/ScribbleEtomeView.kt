@@ -100,8 +100,16 @@ class HandwrittenView(
                 result.success(isWriting())
             }
 
+            "isShown" -> {
+                result.success(isShown())
+            }
+
             "isEdited" -> {
                 result.success(isEdited())
+            }
+
+            "isInEditMode" -> {
+                result.success(isInEditMode())
             }
 
             "setPenStroke" -> {
@@ -154,6 +162,7 @@ class HandwrittenView(
         }
     }
 
+    
     private fun refreshBitmap(){
         mHandwrittenView!!.refreshBitmap()
     }
@@ -224,6 +233,12 @@ class HandwrittenView(
     }
     private fun isWriting(): Boolean {
         return mHandwrittenView!!.isWriting
+    }
+    private fun isShown(): Boolean {
+        return mHandwrittenView!!.isShown
+    }
+    private fun isInEditMode(): Boolean {
+        return mHandwrittenView!!.isInEditMode
     }
     private fun isEdited(): Boolean {
         return mHandwrittenView!!.isEdited

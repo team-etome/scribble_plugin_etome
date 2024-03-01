@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:scribble_etome/scribble_etome.dart';
 import 'package:scribble_etome_example/booklet_page.dart';
@@ -21,6 +23,34 @@ class CanvasPage extends StatefulWidget {
 class _CanvasPageState extends State<CanvasPage> {
   List<int>? currentBitmap;
   bool isOverlay = true;
+
+  @override
+  void initState() {
+    startPrintingTimer(
+        duration: const Duration(seconds: 5),
+        interval: const Duration(milliseconds: 50));
+    super.initState();
+  }
+
+  void startPrintingTimer(
+      {required Duration duration, required Duration interval}) {
+    int count = 0;
+
+    Timer.periodic(interval, (Timer timer) async {
+      // Print something every interval
+      print(await CanvasController.isInEditMode());
+
+      // Increment count
+      count++;
+
+      // Check if the specified duration has passed
+      if (count * interval.inMilliseconds >= duration.inMilliseconds) {
+        // Cancel the timer after the specified duration
+        timer.cancel();
+      }
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
@@ -96,7 +126,7 @@ class _CanvasPageState extends State<CanvasPage> {
                       setState(() {
                         isOverlay = !isOverlay;
                       });
-                      CanvasController.isHovered(isOverlay);
+                      CanvasController.isOverlay(isOverlay);
                     },
                     child: const Text(
                       'Hover',

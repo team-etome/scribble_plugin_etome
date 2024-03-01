@@ -155,6 +155,28 @@ class CanvasController {
     }
   }
 
+  /// Checks if the canvas is currently being written on.
+  static Future<bool> isShown() async {
+    try {
+      bool isShown = await platform.invokeMethod('isShown');
+      return isShown;
+    } catch (e) {
+      log("Error invoking isShown method: $e");
+      rethrow;
+    }
+  }
+
+  /// Checks if the canvas is currently being written on.
+  static Future<bool> isInEditMode() async {
+    try {
+      bool isInEditMode = await platform.invokeMethod('isInEditMode');
+      return isInEditMode;
+    } catch (e) {
+      log("Error invoking isInEditMode method: $e");
+      rethrow;
+    }
+  }
+
   /// Checks if the canvas has been edited.
   static Future<bool> isEdited() async {
     try {
