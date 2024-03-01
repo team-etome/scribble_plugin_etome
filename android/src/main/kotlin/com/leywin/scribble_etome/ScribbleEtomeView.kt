@@ -247,7 +247,6 @@ class HandwrittenView(
     private fun setEraserWidth(eraserWidth: Int) {
         if (initFlag) {
             mHandwrittenView?.eraserWidth = eraserWidth
-            mHandwrittenView?.eraserWidth = eraserWidth
         }
     }
 
