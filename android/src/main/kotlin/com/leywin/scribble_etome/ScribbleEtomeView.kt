@@ -304,6 +304,22 @@ class HandwrittenView(
         }
     }
 
+    fun createFolder(folderPath: String) {
+        val folder = File(folderPath)
+
+        if (!folder.exists()) {
+            val success = folder.mkdirs()
+            if (success) {
+                println("Folder created successfully")
+            } else {
+                println("Failed to create folder")
+            }
+        } else {
+            println("Folder already exists")
+        }
+    }
+
+
 
     private fun getBitmap(result: MethodChannel.Result) {
         if (!buttonLock) {
@@ -381,7 +397,11 @@ class HandwrittenView(
                         mHandwrittenView!!.isHandwriting(isHandwriting)
                         initFlag = true
                         val imageName = creationParams["imageName"] as String?
+                        if(creationParams["saveFolderPath"]!=null){
+                            createFolder(creationParams["saveFolderPath"] as String)
+                        }
                         savePath = creationParams["saveFolderPath"] as String? ?: HANDWRITE_SAVE_PATH
+
 
                         if(imageName!=null){
                             val bitmap = loadBitmap(imageName, savePath)
