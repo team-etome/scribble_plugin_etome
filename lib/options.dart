@@ -103,12 +103,15 @@ class CanvasController {
   }
 
   /// Method to save the canvas drawing.
-  static Future<SaveResult> save(String directoryPath) async {
+  static Future<SaveResult> save(String directoryPath,
+      {bool doNotClear = false}) async {
     try {
       DateTime now = DateTime.now();
       final bitmap =
           await platform.invokeMethod('save', {"imageName": directoryPath});
-      clear();
+      if (!doNotClear) {
+        clear();
+      }
       return SaveResult(
         bitmap: bitmap,
         dateTimeNow: now.toString(),
