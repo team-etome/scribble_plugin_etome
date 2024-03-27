@@ -45,12 +45,21 @@ class CanvasController {
     }
   }
 
-  /// Method to load a drawing from a byte array.
+  /// Method to load a drawing from a image.
   static Future<void> load(String imageName) async {
     try {
       await platform.invokeMethod('load', {'imageName': imageName});
     } catch (e) {
       log("Error invoking load method: $e");
+    }
+  }
+
+  /// Method to load a drawing from image using full path
+  static Future<void> loadAbsolutePath(String fullPath) async {
+    try {
+      await platform.invokeMethod('loadAbsolutePath', {'fullPath': fullPath});
+    } catch (e) {
+      log("Error invoking loadAbsolutePath method: $e");
     }
   }
 
