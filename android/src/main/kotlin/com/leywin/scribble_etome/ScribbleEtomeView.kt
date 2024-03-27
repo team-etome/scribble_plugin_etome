@@ -137,6 +137,11 @@ class HandwrittenView(
                 load(result, imageName!!, savePath)
             }
 
+            "loadAbsolutePath" -> {
+                val fullPath = call.argument<String>("fullPath")
+                loadAbsolutePath(result, fullPath!!)
+            }
+
             "destroy" -> onDestroy()
 
             "getBitmap" -> getBitmap(result)
@@ -190,6 +195,23 @@ class HandwrittenView(
                 result.success(null)
             } else {
                 result.error("LOAD_BITMAP_FAILED", "Failed to load bitmap for image $imageName", null)
+            }
+        } catch (e: Exception) {
+            Log.e("HandwrittenView", "Exception in loading bitmap: ${e.localizedMessage}", e)
+            result.error("LOAD_EXCEPTION", "Exception while loading bitmap: ${e.localizedMessage}", null)
+        }
+    }
+
+
+    private fun loadAbsolutePath(result: MethodChannel.Result, fullPath: String) {
+        try {
+            val bitmap = loadBitmapAbsolutePath(fullPath)
+            if (bitmap != null) {
+                mHandwrittenView?.bitmap = bitmap
+                mHandwrittenView?.refreshBitmap()
+                result.success(null)
+            } else {
+                result.error("LOAD_BITMAP_FAILED", "Failed to load bitmap for image $fullPath", null)
             }
         } catch (e: Exception) {
             Log.e("HandwrittenView", "Exception in loading bitmap: ${e.localizedMessage}", e)
@@ -499,6 +521,27 @@ class HandwrittenView(
 
             return try {
                 BitmapFactory.decodeFile(filePath, options)
+            } catch (e: Exception) {
+                Log.e("HandwrittenView", "Error loading bitmap: ${e.localizedMessage}", e)
+                null
+            }
+        }
+        fun loadBitmapAbsolutePath(fullPath: String): Bitmap? {
+            val file = File(fullPath)
+
+            if (!file.exists()) {
+                Log.e("HandwrittenView", "File not found: $fullPath")
+                return null
+            }
+
+            val options = BitmapFactory.Options().apply {
+                inPreferredConfig = Bitmap.Config.ARGB_8888
+                inScaled = false
+                inMutable = true
+            }
+
+            return try {
+                BitmapFactory.decodeFile(fullPath, options)
             } catch (e: Exception) {
                 Log.e("HandwrittenView", "Error loading bitmap: ${e.localizedMessage}", e)
                 null
