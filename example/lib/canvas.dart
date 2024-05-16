@@ -64,7 +64,7 @@ class _CanvasPageState extends State<CanvasPage> {
               saveFolder: 'EtomeRocks',
               // topPaddingHeight: 150,
               drawingTool: DrawingTool.pencil,
-              penWidthValue: 10,
+              penWidthValue: 10, leftPadding: 50, rightPadding: 50,
             ),
           ),
           if (!isOverlay)

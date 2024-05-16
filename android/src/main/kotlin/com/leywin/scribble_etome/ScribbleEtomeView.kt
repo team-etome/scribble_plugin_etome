@@ -405,8 +405,12 @@ class HandwrittenView(
                                 )
                             )
                         } else {
+                            val rightPadding = (creationParams!!["rightPadding"] as? Int) ?: 0
+                            val leftPadding = (creationParams["leftPadding"] as? Int) ?: 0
+
+
                             mHandwrittenView!!.initNative(
-                                Rect(mLeft, mTop, mRight, mBottom),
+                                Rect(mLeft+rightPadding, mTop, mRight-leftPadding, mBottom),
                                 false,
                                 Rect(mFilterLeft, mFilterTop, mFilterRight, mFilterBottom)
                             )
