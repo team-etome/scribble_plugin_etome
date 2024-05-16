@@ -11,8 +11,13 @@ class CanvasEtome extends StatelessWidget {
       this.saveFolder,
       this.drawingTool = DrawingTool.ballPointPen,
       this.penWidthValue = 3,
-      this.isHandwriting = true});
+      this.isHandwriting = true,
+      this.leftPadding,
+      this.rightPadding});
+
   final int topPaddingHeight;
+  final int? leftPadding;
+  final int? rightPadding;
   final String? imageName;
   final String? saveFolder;
   final DrawingTool drawingTool;
@@ -31,6 +36,8 @@ class CanvasEtome extends StatelessWidget {
       "drawingToolIndex": drawingTool.index,
       "penWidthValue": penWidthValue,
       "isHandwriting": isHandwriting,
+      "leftPadding": leftPadding,
+      "rightPadding": rightPadding
     };
 
     return AndroidView(
