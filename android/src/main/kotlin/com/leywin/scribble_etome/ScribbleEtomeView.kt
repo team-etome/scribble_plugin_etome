@@ -50,6 +50,7 @@ class HandwrittenView(
         val blackLineWidth = creationParams["topPaddingHeight"] as Int
         savePath = creationParams["saveFolderPath"] as String? ?: HANDWRITE_SAVE_PATH
         setPadToppingHeight(topPaddingHeight)
+        setBlackLineWidth(blackLineWidth)
 
         context.resources.displayMetrics.also {
             mScreenW = it.widthPixels
@@ -70,7 +71,7 @@ class HandwrittenView(
         spaceView.layoutParams = layoutParams
     }
     private fun setBlackLineWidth(blackLineHeight: Int) {
-        val blackLine = layout.findViewById<Space>(R.id.blackLine)
+        val blackLine = layout.findViewById<View>(R.id.blackLine)
         val layoutParams = blackLine.layoutParams
         layoutParams.height = blackLineHeight
         blackLine.layoutParams = layoutParams
