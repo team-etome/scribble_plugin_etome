@@ -63,7 +63,7 @@ class _CanvasPageState extends State<CanvasPage> {
               imageName: widget.imageName ?? '',
               saveFolder: 'EtomeRocks',
               // topPaddingHeight: 150,
-              drawingTool: DrawingTool.pencil,
+              drawingTool: DrawingTool.pencil, blackLineHeight: 0,
               penWidthValue: 10, leftPadding: 50, rightPadding: 50,
             ),
           ),

@@ -13,13 +13,15 @@ class CanvasEtome extends StatelessWidget {
       this.penWidthValue = 3,
       this.isHandwriting = true,
       this.leftPadding,
-      this.rightPadding});
+      this.rightPadding,
+      this.blackLineHeight = 1});
 
   final int topPaddingHeight;
   final int? leftPadding;
   final int? rightPadding;
   final String? imageName;
   final String? saveFolder;
+  final int? blackLineHeight;
   final DrawingTool drawingTool;
   final int penWidthValue;
   final bool isHandwriting;

@@ -47,6 +47,7 @@ class HandwrittenView(
     init {
         mHandwrittenView = layout.findViewById(R.id.handwrittenView)
         val topPaddingHeight = creationParams!!["topPaddingHeight"] as Int
+        val blackLineWidth = creationParams["topPaddingHeight"] as Int
         savePath = creationParams["saveFolderPath"] as String? ?: HANDWRITE_SAVE_PATH
         setPadToppingHeight(topPaddingHeight)
 
@@ -67,6 +68,12 @@ class HandwrittenView(
         val layoutParams = spaceView.layoutParams
         layoutParams.height = padToppingHeight
         spaceView.layoutParams = layoutParams
+    }
+    private fun setBlackLineWidth(blackLineHeight: Int) {
+        val blackLine = layout.findViewById<Space>(R.id.blackLine)
+        val layoutParams = blackLine.layoutParams
+        layoutParams.height = blackLineHeight
+        blackLine.layoutParams = layoutParams
     }
 
     private fun onMethodCall(call: MethodCall, result: MethodChannel.Result) {
