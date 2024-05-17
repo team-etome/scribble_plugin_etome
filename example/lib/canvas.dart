@@ -58,6 +58,7 @@ class _CanvasPageState extends State<CanvasPage> {
       child: Stack(
         children: [
           Scaffold(
+            appBar: AppBar(),
             body: CanvasEtome(
               // bitMap: widget.bytes,
               imageName: widget.imageName ?? '',
