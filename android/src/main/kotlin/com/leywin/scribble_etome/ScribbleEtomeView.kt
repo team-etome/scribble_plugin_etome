@@ -154,6 +154,8 @@ class HandwrittenView(
 
             "getBitmap" -> getBitmap(result)
 
+            "getPenWidth" -> getPenWidth(result)
+
             "loadBitmapFromByteArray" -> {
                 val byteArray = call.argument<ByteArray>("byteArray")
                 byteArray?.let {
@@ -361,6 +363,11 @@ class HandwrittenView(
             result.success(byteArray)
             buttonLock = false
         }
+    }
+
+    private fun getPenWidth(result: MethodChannel.Result) {
+        val penWidth: Int = mHandwrittenView!!.penWidth
+        result.success(penWidth)
     }
 
 
