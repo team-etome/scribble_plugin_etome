@@ -154,6 +154,28 @@ class CanvasController {
     }
   }
 
+  /// Method to get the current drawing bitmap.
+  static Future<bool> canUndo() async {
+    try {
+      bool canUndo = await platform.invokeMethod('canUndo');
+      return canUndo;
+    } catch (e) {
+      log("Error invoking canUndo method: $e");
+      rethrow;
+    }
+  }
+
+  /// Method to get the current drawing bitmap.
+  static Future<bool> canRedo() async {
+    try {
+      bool canRedo = await platform.invokeMethod('canRedo');
+      return canRedo;
+    } catch (e) {
+      log("Error invoking canRedo method: $e");
+      rethrow;
+    }
+  }
+
   /// Method to load the bitmap from bytearray.
   static Future<void> loadBitmapFromByteArray(Uint8List byteArray) async {
     try {

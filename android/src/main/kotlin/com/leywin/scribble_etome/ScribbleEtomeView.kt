@@ -156,6 +156,10 @@ class HandwrittenView(
 
             "getPenWidth" -> getPenWidth(result)
 
+            "canUndo" -> canUndo(result)
+
+            "canRedo" -> canRedo(result)
+
             "loadBitmapFromByteArray" -> {
                 val byteArray = call.argument<ByteArray>("byteArray")
                 byteArray?.let {
@@ -368,6 +372,14 @@ class HandwrittenView(
     private fun getPenWidth(result: MethodChannel.Result) {
         val penWidth: Int = mHandwrittenView!!.penWidth
         result.success(penWidth)
+    }
+    private fun canUndo(result: MethodChannel.Result) {
+        val canUndo: Boolean = mHandwrittenView!!.isUndoEnabled
+        result.success(canUndo)
+    }
+    private fun canRedo(result: MethodChannel.Result) {
+        val canRedo: Boolean = mHandwrittenView!!.isRedoEnabled
+        result.success(canRedo)
     }
 
 
