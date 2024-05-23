@@ -143,6 +143,17 @@ class CanvasController {
     }
   }
 
+  /// Method to get the current drawing bitmap.
+  static Future<int> getPenWidth() async {
+    try {
+      int penWidth = await platform.invokeMethod('getPenWidth');
+      return penWidth;
+    } catch (e) {
+      log("Error invoking getPenWidth method: $e");
+      rethrow;
+    }
+  }
+
   /// Method to load the bitmap from bytearray.
   static Future<void> loadBitmapFromByteArray(Uint8List byteArray) async {
     try {
