@@ -156,6 +156,8 @@ class HandwrittenView(
 
             "getPenWidth" -> getPenWidth(result)
 
+            "getPenStroke" -> getPenStroke(result)
+
             "canUndo" -> canUndo(result)
 
             "canRedo" -> canRedo(result)
@@ -254,8 +256,6 @@ class HandwrittenView(
             result.error("BITMAP_ERROR", "byteArray size = ${byteArray.size}, Failed to decode bitmap: ${e.localizedMessage}", null)
         }
     }
-
-
 
     private fun isHandwriting(isHandwriting: Boolean) {
         if (initFlag) {
@@ -369,11 +369,16 @@ class HandwrittenView(
         }
     }
 
+    private fun getPenStroke(result: MethodChannel.Result) {
+            val penStroke: Int = mHandwrittenView!!.penStoke
+            result.success(penStroke)
+    }
+
     private fun getPenWidth(result: MethodChannel.Result) {
         val penWidth: Int = mHandwrittenView!!.penWidth
         result.success(penWidth)
     }
-    private fun canUndo(result: MethodChannel.Result) {
+ private fun canUndo(result: MethodChannel.Result) {
         val canUndo: Boolean = mHandwrittenView!!.isUndoEnabled
         result.success(canUndo)
     }

@@ -154,6 +154,29 @@ class CanvasController {
     }
   }
 
+  /// Method to get the current chosen penTool.
+  static Future<DrawingTool> getPenStroke() async {
+    try {
+      int penStroke = await platform.invokeMethod('getPenStroke');
+      switch (penStroke) {
+        case 0:
+          return DrawingTool.ballPointPen;
+        case 1:
+          return DrawingTool.fountainPen;
+        case 2:
+          return DrawingTool.pencil;
+        case 3:
+          return DrawingTool.linearEraser;
+        case 4:
+          return DrawingTool.areaEraser;
+      }
+      return DrawingTool.ballPointPen;
+    } catch (e) {
+      log("Error invoking getPenStroke method: $e");
+      rethrow;
+    }
+  }
+
   /// Method to get the current drawing bitmap.
   static Future<bool> canUndo() async {
     try {
