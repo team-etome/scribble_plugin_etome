@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:scribble_etome/options.dart';
 
+@Deprecated('use the new scribble_etome_plugin_plus package instead')
 ///Main canvas, call it on a full sized page(or almost full sized page)
 class CanvasEtome extends StatelessWidget {
   const CanvasEtome(
