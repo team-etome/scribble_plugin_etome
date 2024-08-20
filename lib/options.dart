@@ -6,6 +6,8 @@ import 'package:scribble_etome/models.dart';
 /// Enum to represent different drawing tools.
 enum DrawingTool { ballPointPen, fountainPen, pencil, linearEraser, areaEraser }
 
+
+@Deprecated('use the new scribble_etome_plugin_plus package instead')
 class CanvasController {
   static const platform = MethodChannel('canvas_etome_options');
 
